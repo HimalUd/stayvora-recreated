@@ -133,6 +133,33 @@
   flex: 1;
 }
 
+.hobd-stay {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  background: #F1F5F9;
+  border-radius: 6px;
+  padding: 6px 10px;
+  align-self: flex-start;
+}
+
+.hobd-stay-days {
+  color: #1E293B;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.hobd-stay-sep {
+  color: #94A3B8;
+}
+
+.hobd-stay-rate {
+  color: #475569;
+  font-size: 13px;
+  font-weight: 500;
+}
+
 .hobd-info-label {
   color: #4A5565;
   font-size: 12px;

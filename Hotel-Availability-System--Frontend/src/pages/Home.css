@@ -270,6 +270,14 @@
   background: #F9FAFB;
 }
 
+.dashboard-row-link {
+  cursor: pointer;
+}
+
+.dashboard-row-link:hover td {
+  background: #EEF3FB !important;
+}
+
 .db-badge {
   display: inline-block;
   padding: 3px 12px;
@@ -282,6 +290,16 @@
 .db-badge-success {
   background: #D1FAE5;
   color: #065F46;
+}
+
+.db-badge-warning {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.db-badge-error {
+  background: #FEE2E2;
+  color: #991B1B;
 }
 
 /* ===== HOTELS ===== */

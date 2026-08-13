@@ -182,7 +182,8 @@ class Hotel extends Model {
     public function getAdminHotelList(): array {
         $sql = "SELECT h.*, u.name as owner_name, u.email as owner_email, u.phone as owner_phone,
                 (SELECT COUNT(*) FROM bookings WHERE hotel_id = h.id) as total_bookings,
-                (SELECT COUNT(*) FROM bookings WHERE hotel_id = h.id AND status = 'confirmed') as confirmed_bookings
+                (SELECT COUNT(*) FROM bookings WHERE hotel_id = h.id AND status = 'confirmed') as confirmed_bookings,
+                (SELECT image_url FROM hotel_images WHERE hotel_id = h.id LIMIT 1) as image_url
                 FROM hotels h
                 JOIN users u ON h.owner_id = u.id
                 ORDER BY h.created_at DESC";

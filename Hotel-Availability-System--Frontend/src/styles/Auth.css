@@ -59,6 +59,16 @@
   font-family: 'Inter', sans-serif;
 }
 
+.auth-success {
+  background: #DCFCE7;
+  color: #15803D;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 14px;
+  margin-bottom: 1.25rem;
+  font-family: 'Inter', sans-serif;
+}
+
 .auth-field-error {
   color: #DC2626;
   font-size: 13px;

@@ -57,6 +57,16 @@ export default function HotelOwnerBookingDetail() {
   const guestName = booking.guest_name || booking.user_name || 'Guest';
   const initial = guestName.charAt(0).toUpperCase();
 
+  const formatDate = (d) => {
+    const date = new Date(d);
+    if (isNaN(date)) return d;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
+  const nights = Math.max(Math.round((new Date(booking.check_out) - new Date(booking.check_in)) / 86400000), 1);
+  const totalPrice = Number(booking.total_price) || 0;
+  const perNight = totalPrice / nights;
+
   const handleConfirm = async () => {
     try {
       await confirmMutation.mutateAsync(booking.id);
@@ -180,12 +190,17 @@ export default function HotelOwnerBookingDetail() {
             <div className="hobd-info-row-double">
               <div>
                 <span className="hobd-info-label">Check-in</span>
-                <span className="hobd-info-value">{booking.check_in}</span>
+                <span className="hobd-info-value">{formatDate(booking.check_in)}</span>
               </div>
               <div>
                 <span className="hobd-info-label">Check-out</span>
-                <span className="hobd-info-value">{booking.check_out}</span>
+                <span className="hobd-info-value">{formatDate(booking.check_out)}</span>
               </div>
+            </div>
+            <div className="hobd-stay">
+              <span className="hobd-stay-days">{nights} night{nights > 1 ? 's' : ''}</span>
+              <span className="hobd-stay-sep">·</span>
+              <span className="hobd-stay-rate">${perNight.toFixed(2)}/night</span>
             </div>
             <hr className="hobd-divider" />
             <div className="hobd-info-row">

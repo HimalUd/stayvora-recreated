@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../context/AuthContext';
@@ -10,7 +10,9 @@ import './Login.css';
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [error, setError] = useState('');
+  const registered = searchParams.get('registered');
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(loginSchema),
@@ -22,6 +24,8 @@ export default function Login() {
       const result = await login(data.email, data.password);
       if (result?.user?.role === 'admin') {
         navigate('/admin-dashboard');
+      } else if (result?.user?.role === 'owner') {
+        navigate('/hotel-owner-dashboard');
       } else {
         navigate('/home');
       }
@@ -38,6 +42,7 @@ export default function Login() {
             <h1 className="auth-title">Hello Again!</h1>
             <p className="auth-subtitle">Do you have a account? Login here..</p>
 
+            {registered && <div className="auth-success">Account created successfully! Please login.</div>}
             {error && <div className="auth-error">{error}</div>}
 
             <form onSubmit={handleSubmit(onSubmit)} className="auth-form">

@@ -104,6 +104,16 @@
   margin: 0;
 }
 
+.hol-success {
+  background: #DCFCE7;
+  color: #15803D;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  text-align: center;
+  margin: 0 0 16px;
+}
+
 .hol-submit {
   width: 100%;
   height: 36px;

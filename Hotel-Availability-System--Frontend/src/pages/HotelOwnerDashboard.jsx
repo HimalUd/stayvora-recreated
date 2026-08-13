@@ -745,7 +745,11 @@ export default function HotelOwnerDashboard() {
                         className={`hod-notif-item ${n.is_read ? '' : 'hod-notif-item-unread'}`}
                         onClick={() => {
                           if (!n.is_read) markRead.mutate(n.id);
-                          if (n.booking_code) navigate(`/hotel-owner-booking/${n.booking_code}`);
+                          if (n.type === 'review') {
+                            navigate('/hotel-owner-reviews');
+                          } else if (n.booking_code) {
+                            navigate(`/hotel-owner-booking/${n.booking_code}`);
+                          }
                           setShowNotifications(false);
                         }}
                       >
@@ -778,6 +782,18 @@ export default function HotelOwnerDashboard() {
                     <div className="hod-user-menu-name">{user?.name || 'Owner'}</div>
                     <div className="hod-user-menu-email">{user?.email}</div>
                   </div>
+                  <button
+                    className="hod-user-menu-item"
+                    onClick={() => {
+                      setUserMenuOpen(false);
+                      navigate('/hotel-owner-reviews');
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 2l2.39 4.84 5.34.78-3.87 3.77.91 5.32L12 13.27l-4.77 2.51.91-5.32L2.27 6.62l5.34-.78L12 2z" stroke="currentColor" strokeWidth="1.8"/>
+                    </svg>
+                    My Reviews
+                  </button>
                   <button className="hod-user-menu-item" onClick={handleLogout}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                       <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

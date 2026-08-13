@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUserBookings } from '../../hooks/useBookings';
 import { useAuth } from '../../context/AuthContext';
 import './Dashboard.css';
@@ -15,7 +15,8 @@ function StatusBadge({ status }) {
 
 export default function UserDashboard() {
   const { user } = useAuth();
-  const { data: bookings = [], isLoading: loading, isError, error } = useUserBookings();
+  const navigate = useNavigate();
+  const { data: bookings = [], isLoading: loading, error } = useUserBookings();
 
   return (
     <div className="dashboard-page">
@@ -66,7 +67,11 @@ export default function UserDashboard() {
               </thead>
               <tbody>
                 {bookings.map((b) => (
-                  <tr key={b.id}>
+                  <tr
+                    key={b.id}
+                    className="dashboard-row-link"
+                    onClick={() => navigate(`/my-booking/${b.booking_code}`)}
+                  >
                     <td data-label="Hotel">{b.hotel_name || b.hotel?.name}</td>
                     <td data-label="Room">{b.room_type || b.room?.room_type}</td>
                     <td data-label="Check-in">{b.check_in}</td>

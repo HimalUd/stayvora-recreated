@@ -66,11 +66,18 @@ $routes = [
     'api/places/geocode'         => ['PlaceController', 'geocode'],
     'api/places/extract'         => ['PlaceController', 'extract'],
     'api/admin/hotels'           => ['AdminController', 'hotels'],
+    'api/admin/stats'            => ['AdminController', 'stats'],
+    'api/admin/bookings'         => ['AdminController', 'bookings'],
+    'api/admin/reviews'          => ['AdminController', 'reviews'],
     'api/admin/delete-hotel'     => ['AdminController', 'deleteHotel'],
     'api/admin/delete_hotel'     => ['AdminController', 'deleteHotel'],
     'api/notifications/list'     => ['NotificationController', 'list'],
     'api/notifications/mark-read' => ['NotificationController', 'markRead'],
     'api/notifications/mark_read' => ['NotificationController', 'markRead'],
+    'api/reviews/add'            => ['ReviewController', 'add'],
+    'api/reviews/list'           => ['ReviewController', 'list'],
+    'api/reviews/mine'           => ['ReviewController', 'mine'],
+    'api/reviews/owner'          => ['ReviewController', 'owner'],
 ];
 
 $routeFound = false;

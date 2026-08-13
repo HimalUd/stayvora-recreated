@@ -49,18 +49,11 @@ class AuthController extends Controller {
         $userId = $this->userModel->createUser($name, $email, $passwordHash, $phone, $role);
         $this->userModel->markEmailVerified($userId);
 
-        session_regenerate_id(true);
-
-        $_SESSION['user_id'] = $userId;
-        $_SESSION['role'] = $role;
-        $_SESSION['name'] = $name;
-        $_SESSION['email'] = $email;
-
         $user = $this->userModel->getUserById($userId);
         unset($user['password_hash']);
         unset($user['verification_code']);
 
-        $this->json(["message" => "Registration successful", "user" => $user], 201);
+        $this->json(["message" => "Registration successful. Please login.", "user" => $user], 201);
     }
 
     public function sendVerification(): void {

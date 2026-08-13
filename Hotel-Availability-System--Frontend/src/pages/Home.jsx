@@ -405,13 +405,21 @@ export default function Home() {
                 </thead>
                 <tbody>
                   {bookings.map((b) => (
-                    <tr key={b.id}>
+                    <tr
+                      key={b.id}
+                      className="dashboard-row-link"
+                      onClick={() => navigate(`/my-booking/${b.booking_code}`)}
+                    >
                       <td data-label="Hotel">{b.hotel_name || b.hotel}</td>
                       <td data-label="Room">{b.room_type || b.room}</td>
                       <td data-label="Check-in">{b.check_in || b.checkIn}</td>
                       <td data-label="Check-out">{b.check_out || b.checkOut}</td>
                       <td data-label="Total">${b.total_price || b.total}</td>
-                      <td data-label="Status"><span className="db-badge db-badge-success">{b.status}</span></td>
+                      <td data-label="Status">
+                        <span className={`db-badge db-badge-${b.status === 'cancelled' ? 'error' : b.status === 'pending' ? 'warning' : 'success'}`}>
+                          {b.status}
+                        </span>
+                      </td>
                       <td data-label="Booked On">{b.created_at || b.bookedOn}</td>
                     </tr>
                   ))}

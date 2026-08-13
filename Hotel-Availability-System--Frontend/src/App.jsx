@@ -22,6 +22,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import UserDashboard from './pages/Dashboard/UserDashboard';
+import MyBookingDetail from './pages/MyBookingDetail';
+import HotelOwnerReviews from './pages/HotelOwnerReviews';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 function AuthLayout({ children }) {
@@ -62,7 +64,22 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="/hotel-owner-booking/:bookingCode" element={<HotelOwnerBookingDetail />} />
+      <Route
+        path="/hotel-owner-booking/:bookingCode"
+        element={
+          <ProtectedRoute requiredRole="owner">
+            <HotelOwnerBookingDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/hotel-owner-reviews"
+        element={
+          <ProtectedRoute requiredRole="owner">
+            <HotelOwnerReviews />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route
         path="/home"
@@ -109,6 +126,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <AuthLayout><UserDashboard /></AuthLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-booking/:bookingCode"
+        element={
+          <ProtectedRoute>
+            <AuthLayout><MyBookingDetail /></AuthLayout>
           </ProtectedRoute>
         }
       />

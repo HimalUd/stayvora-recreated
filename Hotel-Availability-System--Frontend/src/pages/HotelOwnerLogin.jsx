@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../context/AuthContext';
@@ -9,7 +9,9 @@ import './HotelOwnerLogin.css';
 export default function HotelOwnerLogin() {
   const navigate = useNavigate();
   const { login, logout } = useAuth();
+  const [searchParams] = useSearchParams();
   const [error, setError] = useState('');
+  const registered = searchParams.get('registered');
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(loginSchema),
@@ -43,6 +45,8 @@ export default function HotelOwnerLogin() {
           </div>
           <h1 className="hol-title">Hotel Owner Login</h1>
           <p className="hol-subtitle">Access your hotel dashboard</p>
+
+          {registered && <p className="hol-success">Account created successfully! Please login.</p>}
 
           <form className="hol-form" onSubmit={handleSubmit(onSubmit)}>
             <div className="hol-field">

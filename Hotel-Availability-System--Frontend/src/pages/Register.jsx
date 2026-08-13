@@ -21,8 +21,8 @@ export default function Register() {
     setError('');
     try {
       const { confirmPassword, ...payload } = data;
-      const res = await authRegister(payload);
-      navigate(res?.user?.role === 'owner' ? '/hotel-owner-dashboard' : '/home');
+      await authRegister(payload);
+      navigate(payload.role === 'owner' ? '/hotel-owner-login?registered=1' : '/login?registered=1');
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Registration failed');
     }

@@ -72,6 +72,9 @@ export const placesAPI = {
 
 export const adminAPI = {
   hotels: () => api.get('/api/admin/hotels'),
+  stats: () => api.get('/api/admin/stats'),
+  bookings: () => api.get('/api/admin/bookings'),
+  reviews: () => api.get('/api/admin/reviews'),
   deleteHotel: (id) => api.delete('/api/admin/delete_hotel', { params: { id } }),
 };
 
@@ -79,6 +82,13 @@ export const notificationsAPI = {
   list: () => api.get('/api/notifications/list'),
   markRead: (id) => api.post('/api/notifications/mark_read', { id }),
   markAllRead: () => api.post('/api/notifications/mark_read'),
+};
+
+export const reviewsAPI = {
+  add: (data) => api.post('/api/reviews/add', data),
+  list: (hotelId) => api.get('/api/reviews/list', { params: { hotel_id: hotelId } }),
+  mine: (bookingId) => api.get('/api/reviews/mine', { params: { booking_id: bookingId } }),
+  owner: () => api.get('/api/reviews/owner'),
 };
 
 export default api;

@@ -1,11 +1,13 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.gc_maxlifetime', 86400);
+    ini_set('session.use_strict_mode', 1);
+    $isHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
     session_set_cookie_params([
         'lifetime' => 86400,
         'path' => '/',
         'domain' => '',
-        'secure' => false,
+        'secure' => $isHttps,
         'httponly' => true,
         'samesite' => 'Lax'
     ]);

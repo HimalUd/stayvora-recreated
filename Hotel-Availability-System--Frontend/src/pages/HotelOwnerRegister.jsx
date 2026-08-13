@@ -25,7 +25,7 @@ export default function HotelOwnerRegister() {
         password: data.password,
         role: 'owner',
       });
-      navigate('/hotel-owner-dashboard');
+      navigate('/hotel-owner-login?registered=1');
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Registration failed');
     }

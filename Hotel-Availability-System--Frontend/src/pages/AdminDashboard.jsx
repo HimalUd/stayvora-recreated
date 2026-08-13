@@ -1,7 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useAdminHotels, useDeleteHotel } from '../hooks/useAdmin';
+import {
+  useAdminHotels,
+  useAdminStats,
+  useAdminBookings,
+  useAdminReviews,
+  useDeleteHotel,
+} from '../hooks/useAdmin';
 import './AdminDashboard.css';
 
 export default function AdminDashboard() {
@@ -18,19 +24,24 @@ export default function AdminDashboard() {
   }, [user, navigate]);
 
   const { data: registeredHotels = [], isLoading: hotelsLoading } = useAdminHotels();
+  const { data: stats = {} } = useAdminStats();
+  const { data: recentBookings = [], isLoading: bookingsLoading } = useAdminBookings();
+  const { data: allReviews = [], isLoading: reviewsLoading } = useAdminReviews();
   const deleteHotel = useDeleteHotel();
 
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   });
 
-  const stats = useMemo(() => {
-    const totalHotels = registeredHotels.length;
-    const totalBookings = registeredHotels.reduce((sum, h) => sum + (h.total_bookings || 0), 0);
-    const revenue = 0;
+  const statsView = useMemo(() => {
     const flagged = registeredHotels.filter(h => (h.rating || 0) < 3).length;
-    return { totalHotels, ownerRegistered: registeredHotels.length, totalBookings, revenue, totalReviews: 0, flagged };
-  }, [registeredHotels]);
+    return {
+      totalHotels: stats.total_hotels ?? registeredHotels.length,
+      totalBookings: stats.total_bookings ?? 0,
+      totalReviews: stats.total_reviews ?? 0,
+      flagged,
+    };
+  }, [stats, registeredHotels]);
 
   const handleSignOut = () => {
     logout();
@@ -109,7 +120,7 @@ export default function AdminDashboard() {
           </div>
           <div
             className={`ad-nav-item ${activeTab === 'hotels' ? 'ad-nav-active' : ''}`}
-            onClick={() => setActiveTab('hotels')}
+            onClick={() => { setActiveTab('hotels'); setFlaggedFilter(false); }}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <rect x="4" y="1.33" width="8" height="13.33" rx="1.33" stroke={activeTab === 'hotels' ? '#020618' : '#90A1B9'} strokeWidth="1.33"/>
@@ -169,9 +180,9 @@ export default function AdminDashboard() {
                     <rect x="15" y="7.50" width="3.33" height="10.83" rx="1.67" stroke="#51A2FF" strokeWidth="1.67"/>
                   </svg>
                 </div>
-                <div className="ad-stat-number">{stats.totalHotels}</div>
+                <div className="ad-stat-number">{statsView.totalHotels}</div>
                 <div className="ad-stat-label">Total Hotels</div>
-                <div className="ad-stat-sub">{stats.ownerRegistered} owner-registered</div>
+                <div className="ad-stat-sub">{statsView.totalHotels} owner-registered</div>
               </div>
               <div className="ad-stat-card">
                 <div className="ad-stat-icon" style={{ background: 'rgba(0, 212, 146, 0.10)' }}>
@@ -180,9 +191,9 @@ export default function AdminDashboard() {
                     <rect x="13.33" y="5.83" width="5" height="5" rx="1.67" stroke="#00D492" strokeWidth="1.67"/>
                   </svg>
                 </div>
-                <div className="ad-stat-number">{stats.totalBookings}</div>
+                <div className="ad-stat-number">{statsView.totalBookings}</div>
                 <div className="ad-stat-label">Total Bookings</div>
-                <div className="ad-stat-sub">${stats.revenue} revenue</div>
+                <div className="ad-stat-sub">all bookings in the system</div>
               </div>
               <div className="ad-stat-card">
                 <div className="ad-stat-icon" style={{ background: 'rgba(255, 185, 0, 0.10)' }}>
@@ -190,19 +201,23 @@ export default function AdminDashboard() {
                     <rect x="1.67" y="1.67" width="16.67" height="15.89" rx="1.67" stroke="#FFB900" strokeWidth="1.67"/>
                   </svg>
                 </div>
-                <div className="ad-stat-number">{stats.totalReviews}</div>
+                <div className="ad-stat-number">{statsView.totalReviews}</div>
                 <div className="ad-stat-label">Total Reviews</div>
                 <div className="ad-stat-sub">across all properties</div>
               </div>
-              <div className="ad-stat-card">
+              <div
+                className="ad-stat-card"
+                style={{ cursor: 'pointer' }}
+                onClick={() => { setFlaggedFilter(true); setActiveTab('hotels'); }}
+              >
                 <div className="ad-stat-icon" style={{ background: 'rgba(255, 100, 103, 0.10)' }}>
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <rect x="3.33" y="1.67" width="13.33" height="16.67" rx="1.67" stroke="#FF6467" strokeWidth="1.67"/>
                   </svg>
                 </div>
-                <div className="ad-stat-number">{stats.flagged}</div>
+                <div className="ad-stat-number">{statsView.flagged}</div>
                 <div className="ad-stat-label">Flagged Hotels</div>
-                <div className="ad-stat-sub">rating below 3.0</div>
+                <div className="ad-stat-sub">rating below 3.0 · click to view</div>
               </div>
             </div>
 
@@ -268,13 +283,42 @@ export default function AdminDashboard() {
                     Recent Bookings
                   </div>
                 </div>
-                <div className="ad-empty-state">
-                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" opacity="0.20">
-                    <rect x="2.66" y="2.67" width="26.67" height="25.43" rx="2.67" stroke="#62748E" strokeWidth="2.67"/>
-                  </svg>
-                  <p className="ad-empty-title">No bookings yet</p>
-                  <p className="ad-empty-sub">Bookings will appear here once guests make reservations</p>
-                </div>
+                {bookingsLoading ? (
+                  <div className="ad-empty-state">
+                    <p className="ad-empty-title">Loading bookings...</p>
+                  </div>
+                ) : recentBookings.length > 0 ? (
+                  <div className="ad-hotel-list">
+                    {recentBookings.map((b) => (
+                      <div key={b.id} className="ad-hotel-row">
+                        <div className="ad-user-avatar" style={{ width: 36, height: 36, fontSize: 12, borderRadius: 10, background: '#314158' }}>
+                          {(b.hotel_name || 'H')[0]}
+                        </div>
+                        <div className="ad-hotel-info">
+                          <div className="ad-hotel-name">{b.hotel_name}</div>
+                          <div className="ad-hotel-location">
+                            {b.guest_name || b.user_name} · {b.booking_code}
+                          </div>
+                        </div>
+                        <div className="ad-booking-right">
+                          <div className="ad-booking-amount">${b.total_price || 0}</div>
+                          <div className={`ad-booking-status ad-booking-status-${b.status}`}>{b.status}</div>
+                          <div className="ad-booking-date">
+                            {new Date(b.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="ad-empty-state">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" opacity="0.20">
+                      <rect x="2.66" y="2.67" width="26.67" height="25.43" rx="2.67" stroke="#62748E" strokeWidth="2.67"/>
+                    </svg>
+                    <p className="ad-empty-title">No bookings yet</p>
+                    <p className="ad-empty-sub">Bookings will appear here once guests make reservations</p>
+                  </div>
+                )}
               </div>
             </div>
           </>
@@ -379,10 +423,42 @@ export default function AdminDashboard() {
         {activeTab === 'reviews' && (
           <>
             <h1 className="ad-page-title">Reviews</h1>
-            <p className="ad-page-date">No reviews yet</p>
-            <p className="ad-empty-title" style={{ paddingTop: 48 }}>
-              Guest reviews from the database will be shown here in a future update.
+            <p className="ad-page-date">
+              {allReviews.length} {allReviews.length === 1 ? 'review' : 'reviews'} across all hotels
             </p>
+            {reviewsLoading ? (
+              <p className="ad-empty-title" style={{ paddingTop: 48, textAlign: 'center', width: '100%' }}>Loading reviews...</p>
+            ) : allReviews.length > 0 ? (
+              <div className="ad-hotel-grid" style={{ paddingTop: 24 }}>
+                {allReviews.map((r) => (
+                  <div key={r.id} className="ad-stat-card ad-hotel-card" style={{ padding: 16 }}>
+                    <div className="ad-hotel-name" style={{ fontSize: 15, fontWeight: 600, color: '#fff' }}>
+                      {r.hotel_name}
+                    </div>
+                    <div className="ad-hotel-location" style={{ paddingTop: 4 }}>
+                      {r.user_name} · {new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </div>
+                    <div className="ad-rating-badge" style={{ marginTop: 12 }}>
+                      {r.rating} / 5
+                    </div>
+                    {r.title && (
+                      <div className="ad-hotel-name" style={{ fontSize: 14, fontWeight: 600, color: '#fff', paddingTop: 12 }}>
+                        {r.title}
+                      </div>
+                    )}
+                    {r.comment && (
+                      <div className="ad-hotel-location" style={{ paddingTop: 6, lineHeight: 1.5 }}>
+                        {r.comment}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="ad-empty-title" style={{ paddingTop: 48 }}>
+                No reviews yet. Reviews submitted by guests will appear here.
+              </p>
+            )}
           </>
         )}
 
@@ -392,7 +468,16 @@ export default function AdminDashboard() {
             <div className="ad-modal ad-modal-hotel" onClick={e => e.stopPropagation()}>
               {/* IMAGE HEADER */}
               <div className="ad-hotel-modal-img-wrap">
-                <div className="ad-hotel-modal-img ad-hotel-modal-img-placeholder" />
+                {selectedHotel.image_url ? (
+                  <img
+                    src={selectedHotel.image_url}
+                    alt={selectedHotel.name}
+                    className="ad-hotel-modal-img"
+                    style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                  />
+                ) : (
+                  <div className="ad-hotel-modal-img ad-hotel-modal-img-placeholder" />
+                )}
                 <div className="ad-hotel-modal-gradient" />
                 <div className="ad-hotel-modal-close" onClick={handleCloseHotel}>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

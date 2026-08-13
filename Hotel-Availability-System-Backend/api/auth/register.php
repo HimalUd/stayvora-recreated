@@ -52,15 +52,8 @@ $stmt = $conn->prepare("INSERT INTO users (name, email, password_hash, phone, ro
 $stmt->execute([$name, $email, $password_hash, $phone, $role]);
 $userId = $conn->lastInsertId();
 
-session_regenerate_id(true);
-
-$_SESSION['user_id'] = $userId;
-$_SESSION['role'] = $role;
-$_SESSION['name'] = $name;
-$_SESSION['email'] = $email;
-
 $stmt = $conn->prepare("SELECT id, name, email, phone, role, created_at FROM users WHERE id = ?");
 $stmt->execute([$userId]);
 $user = $stmt->fetch();
 
-jsonResponse(["message" => "Registration successful", "user" => $user], 201);
+jsonResponse(["message" => "Registration successful. Please login.", "user" => $user], 201);
