@@ -1,0 +1,11 @@
+# Node
+node_modules/
+build/
+dist/
+
+# OS
+.DS_Store
+
+# Backend runtime
+Hotel-Availability-System-Backend/logs/
+Hotel-Availability-System-Backend/uploads/
