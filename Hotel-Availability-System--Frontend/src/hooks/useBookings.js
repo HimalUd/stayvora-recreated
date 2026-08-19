@@ -8,10 +8,11 @@ export function useUserBookings() {
   });
 }
 
-export function useOwnerBookings() {
+export function useOwnerBookings(hotelId) {
   return useQuery({
-    queryKey: ['bookings', 'owner'],
-    queryFn: () => bookingsAPI.listOwner().then(r => r.data.bookings || []),
+    queryKey: ['bookings', 'owner', hotelId || 'all'],
+    queryFn: () => bookingsAPI.listOwner(hotelId).then(r => r.data.bookings || []),
+    enabled: !!hotelId,
   });
 }
 

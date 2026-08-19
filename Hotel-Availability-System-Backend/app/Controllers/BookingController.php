@@ -114,7 +114,9 @@ class BookingController extends Controller {
 
     public function listOwner(): void {
         $this->requireOwner();
-        $bookings = $this->bookingModel->getOwnerBookings($this->getUserId());
+        $hotelIdParam = $this->getQueryParam('hotel_id');
+        $hotelId = ($hotelIdParam !== null && $hotelIdParam !== '') ? (int)$hotelIdParam : null;
+        $bookings = $this->bookingModel->getOwnerBookings($this->getUserId(), $hotelId);
         $this->json(["bookings" => $bookings]);
     }
 

@@ -42,7 +42,7 @@ export const roomsAPI = {
 export const bookingsAPI = {
   create: (data) => api.post('/api/bookings/create', data),
   listUser: () => api.get('/api/bookings/list_user'),
-  listOwner: () => api.get('/api/bookings/list_owner'),
+  listOwner: (hotelId) => api.get('/api/bookings/list_owner', { params: hotelId ? { hotel_id: hotelId } : {} }),
   confirm: (id) => api.put('/api/bookings/confirm', { id }),
   cancel: (id) => api.put('/api/bookings/cancel', { id }),
 };

@@ -42,7 +42,7 @@ class Booking extends Model {
         );
     }
 
-    public function getOwnerBookings(int $ownerId): array {
+    public function getOwnerBookings(int $ownerId, ?int $hotelId = null): array {
         return $this->fetchAll(
             "SELECT b.*, h.name as hotel_name, r.room_type, u.name as user_name, u.email as user_email,
                     u.phone as user_phone
@@ -50,9 +50,9 @@ class Booking extends Model {
              JOIN hotels h ON b.hotel_id = h.id
              JOIN rooms r ON b.room_id = r.id
              JOIN users u ON b.user_id = u.id
-             WHERE h.owner_id = ?
+             WHERE h.owner_id = ? AND (? IS NULL OR b.hotel_id = ?)
              ORDER BY b.created_at DESC",
-            [$ownerId]
+            [$ownerId, $hotelId, $hotelId]
         );
     }
 

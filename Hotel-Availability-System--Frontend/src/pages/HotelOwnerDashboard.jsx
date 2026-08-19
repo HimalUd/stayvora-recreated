@@ -68,14 +68,14 @@ const imageSchema = z.object({
 export default function HotelOwnerDashboard() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { data: bookings = [], isLoading: loading } = useOwnerBookings();
+  const [selectedHotelId, setSelectedHotelId] = useState(null);
+  const { data: bookings = [], isLoading: loading } = useOwnerBookings(selectedHotelId);
   const { data: hotels = [], isLoading: hotelsLoading } = useOwnerHotels();
   const { data: notifData, refetch: refetchNotifications } = useNotifications();
   const markRead = useMarkNotificationRead();
   const markAllRead = useMarkAllNotificationsRead();
   const notifications = notifData?.notifications || [];
   const unreadCount = notifData?.unread || 0;
-  const [selectedHotelId, setSelectedHotelId] = useState(null);
   const selectedHotel = hotels.find(h => h.id === selectedHotelId) || null;
 
   const { data: events = [], isLoading: eventsLoading } = useEvents(selectedHotelId);
@@ -102,7 +102,6 @@ export default function HotelOwnerDashboard() {
   const [imageError, setImageError] = useState('');
   const [imageSuccess, setImageSuccess] = useState('');
   const [newAmenity, setNewAmenity] = useState('');
-  const [bookingHotelFilter, setBookingHotelFilter] = useState('all');
   const [eventCalOpen, setEventCalOpen] = useState(false);
   const eventDateFieldRef = useRef(null);
 
@@ -155,9 +154,17 @@ export default function HotelOwnerDashboard() {
   const stats = {
     total: bookings.length,
     pending: bookings.filter(b => b.status === 'pending').length,
+    revenue: bookings
+      .filter(b => b.status !== 'cancelled')
+      .reduce((sum, b) => sum + (Number(b.total_price) || 0), 0),
     avgRating: hotels.length > 0
       ? (Number(selectedHotel?.rating) || hotels.reduce((sum, h) => sum + (Number(h.rating) || 0), 0) / hotels.length).toFixed(1)
       : '—',
+  };
+
+  const formatRevenue = (value) => {
+    if (!value) return '$0';
+    return '$' + value.toLocaleString('en-US');
   };
 
   const onEventSubmit = async (data) => {
@@ -227,10 +234,6 @@ export default function HotelOwnerDashboard() {
     resetRoom();
   };
 
-  const filteredBookings = bookingHotelFilter === 'all'
-    ? bookings
-    : bookings.filter(b => b.hotel_id === Number(bookingHotelFilter));
-
   const formatDate = (d) => {
     const date = new Date(d);
     if (isNaN(date)) return d;
@@ -239,30 +242,15 @@ export default function HotelOwnerDashboard() {
 
   const renderBookingList = () => (
     <div className="hod-booking-list">
-      {hotels.length > 1 && (
-        <div className="hod-booking-filter">
-          <label className="hod-booking-filter-label">Filter by hotel:</label>
-          <select
-            className="hod-select"
-            value={bookingHotelFilter}
-            onChange={e => setBookingHotelFilter(e.target.value)}
-          >
-            <option value="all">All hotels</option>
-            {hotels.map(h => (
-              <option key={h.id} value={h.id}>{h.name}</option>
-            ))}
-          </select>
-        </div>
-      )}
       {loading ? (
         <div className="loading-screen"><div className="spinner spinner-lg" /></div>
-      ) : filteredBookings.length === 0 ? (
+      ) : bookings.length === 0 ? (
         <div className="hod-empty">
           <div className="hod-empty-icon">📋</div>
-          <p>No bookings yet</p>
+          <p>No bookings yet{selectedHotel ? ` for ${selectedHotel.name}` : ''}</p>
         </div>
       ) : (
-        filteredBookings.map((b) => {
+        bookings.map((b) => {
           const guestName = b.guest_name || b.user_name || 'Guest';
           const initial = guestName.charAt(0).toUpperCase();
           const status = b.status || 'pending';
@@ -308,7 +296,7 @@ export default function HotelOwnerDashboard() {
                 </div>
                 <div className="hod-bd-item">
                   <span className="hod-bd-label">Total</span>
-                  <span className="hod-bd-value">${b.total_price || 0}</span>
+                  <span className="hod-bd-value hod-bd-total">{formatRevenue(b.total_price)}</span>
                 </div>
               </div>
             </div>
@@ -582,20 +570,12 @@ export default function HotelOwnerDashboard() {
       ) : (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {amenityList.map((amenity, idx) => (
-            <div key={idx} style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              background: '#EFF6FF', border: '1px solid #BFDBFE',
-              borderRadius: 8, padding: '6px 12px',
-            }}>
-              <span style={{ color: '#1E40AF', fontSize: 14, fontWeight: 500 }}>{amenity}</span>
+            <div key={idx} className="hod-amenity-chip">
+              <span>{amenity}</span>
               <button
                 onClick={() => deleteAmenity.mutate({ hotel_id: selectedHotelId, amenity })}
                 disabled={deleteAmenity.isPending}
-                style={{
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  padding: 2, color: '#EF4444', display: 'flex',
-                  fontSize: 16, lineHeight: 1, opacity: deleteAmenity.isPending ? 0.5 : 1,
-                }}
+                className="hod-amenity-chip-del"
               >
                 &times;
               </button>
@@ -812,8 +792,13 @@ export default function HotelOwnerDashboard() {
       <div className="hod-content">
         <div className="hod-welcome-header">
           <div>
+            <span className="hod-eyebrow">Owner Overview</span>
             <h1 className="hod-welcome">Welcome back, {(user?.name || 'Owner').split(' ')[0]}!</h1>
-            <p className="hod-sub">Here's what's happening with your hotel today</p>
+            <p className="hod-sub">
+              {selectedHotel
+                ? `Showing insights for ${selectedHotel.name}`
+                : "Here's what's happening with your hotel today"}
+            </p>
           </div>
           <div className="hod-welcome-actions">
             <button className="hod-welcome-btn hod-welcome-btn-primary" onClick={() => navigate('/hotel-registration')}>
@@ -828,7 +813,7 @@ export default function HotelOwnerDashboard() {
           <div className="hod-selector-wrap">
             <div className="hod-selector-icon">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="#F5A624" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
             <label className="hod-selector-label">Select Hotel:</label>
@@ -891,6 +876,18 @@ export default function HotelOwnerDashboard() {
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path d="M12 6V12L16 14" stroke="#D97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <circle cx="12" cy="12" r="9" stroke="#D97706" strokeWidth="2"/>
+              </svg>
+            </div>
+          </div>
+          <div className="hod-stat-card">
+            <div>
+              <div className="hod-stat-label">Total Revenue</div>
+              <div className="hod-stat-value hod-stat-value-gold">{formatRevenue(stats.revenue)}</div>
+            </div>
+            <div className="hod-stat-icon hod-stat-icon-gold">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M12 1V23" stroke="#B45309" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M17 5H9.5C7.84315 5 6.5 6.34315 6.5 8C6.5 9.65685 7.84315 11 9.5 11H14.5C16.1569 11 17.5 12.3431 17.5 14C17.5 15.6569 16.1569 17 14.5 17H7" stroke="#B45309" strokeWidth="2" strokeLinecap="round"/>
               </svg>
             </div>
           </div>
