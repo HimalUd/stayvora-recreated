@@ -169,6 +169,10 @@ export default function HotelDetail() {
         <div className="hd-hero-overlay" />
         <div className="hd-hero-content">
           <div className="hd-hero-info">
+            <div className="hd-hero-eyebrow">
+              <span className="hd-hero-eyebrow-mark" />
+              StayVora Featured Stay
+            </div>
             <h1 className="hd-hero-title">{hotel.name}</h1>
             <div className="hd-hero-location">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" strokeWidth="1.67">
@@ -179,10 +183,13 @@ export default function HotelDetail() {
             </div>
           </div>
           <div className="hd-hero-rating">
-            <svg width="24" height="24" viewBox="0 0 20 20" fill="white">
+            <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
               <path d="M10 1l2.39 4.84 5.34.78-3.87 3.77.91 5.32L10 13.27l-4.77 2.51.91-5.32L2.27 6.62l5.34-.78L10 1z" />
             </svg>
-            <span>{rating}</span>
+            <div className="hd-hero-rating-info">
+              <span className="hd-hero-rating-value">{rating}</span>
+              <span className="hd-hero-rating-label">{ratingLabel}</span>
+            </div>
           </div>
         </div>
       </section>
@@ -218,7 +225,10 @@ export default function HotelDetail() {
               <span className="hd-review-count">Based on {hotel.total_reviews || 0} reviews</span>
             </div>
             <div className="hd-section">
-              <h2 className="hd-section-title">About This Hotel</h2>
+              <div className="hd-section-head">
+                <span className="hd-eyebrow">About The Hotel</span>
+                <h2 className="hd-section-title">About This Hotel</h2>
+              </div>
               <p className="hd-description">{hotel.description}</p>
             </div>
             <div className="hd-facilities-box">
@@ -229,7 +239,10 @@ export default function HotelDetail() {
 
           {/* Amenities */}
           <div className="hd-card">
-            <h2 className="hd-section-title">Hotel Amenities & Services</h2>
+            <div className="hd-section-head">
+              <span className="hd-eyebrow">Comfort &amp; Convenience</span>
+              <h2 className="hd-section-title">Hotel Amenities &amp; Services</h2>
+            </div>
             <div className="hd-amenities-grid">
               {amenitiesList.map((a, i) => (
                 <div key={i} className="hd-amenity-item">
@@ -243,8 +256,11 @@ export default function HotelDetail() {
           </div>
 
           {/* Choose Your Room */}
-          <div className="hd-card">
-            <h2 className="hd-section-title">Choose Your Room</h2>
+          <div className="hd-card" id="hd-rooms-section">
+            <div className="hd-section-head">
+              <span className="hd-eyebrow">Pick Your Perfect Stay</span>
+              <h2 className="hd-section-title">Choose Your Room</h2>
+            </div>
             <div className="hd-rooms">
               {rooms.map((room, i) => (
                 <div
@@ -253,7 +269,17 @@ export default function HotelDetail() {
                   onClick={() => setSelectedRoom(i)}
                 >
                   <div className="hd-room-left">
-                    <h3 className="hd-room-name">{room.room_type}</h3>
+                    <div className="hd-room-name-row">
+                      <h3 className="hd-room-name">{room.room_type}</h3>
+                      {selectedRoom === i && (
+                        <span className="hd-room-selected-chip">
+                          <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                            <path d="M4 10.5l4 4 8-9" stroke="#0A1B33" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                          Selected
+                        </span>
+                      )}
+                    </div>
                     <div className="hd-room-perks">
                       <div className="hd-perk">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -279,7 +305,9 @@ export default function HotelDetail() {
                       <span className="hd-room-current">${room.price}</span>
                       <span className="hd-room-unit">per night</span>
                     </div>
-                    <button className="hd-book-btn" onClick={() => navigate(`/booking/${id}?room=${room.id}`)}>Book Now</button>
+                    <button className="hd-book-btn" onClick={() => navigate(`/booking/${id}?room=${room.id}`)}>
+                      {selectedRoom === i ? 'Book This Room' : 'Book Now'}
+                    </button>
                   </div>
                 </div>
               ))}
@@ -288,7 +316,10 @@ export default function HotelDetail() {
 
           {/* Location & Map */}
           <div className="hd-card">
-            <h2 className="hd-section-title">Location & Nearby Destinations</h2>
+            <div className="hd-section-head">
+              <span className="hd-eyebrow">Find Your Way</span>
+              <h2 className="hd-section-title">Location &amp; Nearby Destinations</h2>
+            </div>
             <div className="hd-address">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#155DFC" strokeWidth="2" />
@@ -357,6 +388,15 @@ export default function HotelDetail() {
                   <div className="hd-booking-amount">{minPrice > 0 ? `$${minPrice}` : '-'}</div>
                   <div className="hd-booking-unit">per night</div>
                 </div>
+              <button
+                className="hd-booking-cta"
+                onClick={() => document.getElementById('hd-rooms-section')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Choose Your Room
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
               <div className="hd-booking-badges">
                 <div className="hd-booking-badge hd-badge-green">
                   ✓ Free cancellation

@@ -7,6 +7,7 @@ export default function FeaturesSection() {
     <section className="hop-features">
       <div className="hop-section-container">
         <SectionHeader
+          eyebrow="Owner Tools"
           title="Everything You Need to Succeed"
           subtitle="Powerful tools and features designed specifically for hotel owners"
         />

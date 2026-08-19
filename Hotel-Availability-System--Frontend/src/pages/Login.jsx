@@ -39,8 +39,9 @@ export default function Login() {
       <div className="auth-card">
         <div className="auth-form-side">
           <div className="auth-form-container">
+            <span className="auth-eyebrow">Welcome Back</span>
             <h1 className="auth-title">Hello Again!</h1>
-            <p className="auth-subtitle">Do you have a account? Login here..</p>
+            <p className="auth-subtitle">Sign in to continue your stay journey</p>
 
             {registered && <div className="auth-success">Account created successfully! Please login.</div>}
             {error && <div className="auth-error">{error}</div>}
@@ -74,6 +75,14 @@ export default function Login() {
             alt="Luxury hotel"
             className="auth-image"
           />
+          <div className="auth-image-overlay">
+            <div className="auth-image-brand">
+              <span className="auth-image-brand-mark">S</span>
+              <span className="auth-image-brand-name">StayVora</span>
+            </div>
+            <h2 className="auth-image-title">Discover Sri Lanka's Finest Stays</h2>
+            <p className="auth-image-subtitle">From beach villas in Mirissa to mountain retreats in Ella — your perfect stay awaits.</p>
+          </div>
         </div>
       </div>
     </div>

@@ -8,7 +8,7 @@ export default function TestimonialsSection() {
   return (
     <section className="hop-testimonials">
       <div className="hop-section-container">
-        <SectionHeader title="What Hotel Owners Say" subtitle="Join thousands of successful hotel partners" />
+        <SectionHeader eyebrow="Partner Stories" title="What Hotel Owners Say" subtitle="Join thousands of successful hotel partners" />
         <div className="hop-testimonials-grid">
           {testimonials.map(t => (
             <div key={t.name} className="hop-testimonial-card">

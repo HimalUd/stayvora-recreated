@@ -37,11 +37,20 @@ export default function Register() {
             alt="Travel destination"
             className="auth-image"
           />
+          <div className="auth-image-overlay">
+            <div className="auth-image-brand">
+              <span className="auth-image-brand-mark">S</span>
+              <span className="auth-image-brand-name">StayVora</span>
+            </div>
+            <h2 className="auth-image-title">Your Gateway to Memorable Stays</h2>
+            <p className="auth-image-subtitle">Join thousands of travelers booking handpicked hotels across Sri Lanka.</p>
+          </div>
         </div>
         <div className="auth-form-side">
           <div className="auth-form-container">
-            <h1 className="auth-title">Hello Again!</h1>
-            <p className="auth-subtitle">Do you haven't a account? create a account here..</p>
+            <span className="auth-eyebrow">Join StayVora</span>
+            <h1 className="auth-title">Create Your Account</h1>
+            <p className="auth-subtitle">Start booking your perfect stay today</p>
 
             {error && <div className="auth-error">{error}</div>}
 

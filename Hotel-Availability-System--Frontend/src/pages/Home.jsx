@@ -10,20 +10,50 @@ import { AMENITIES } from '../lib/amenities';
 import { TRAVEL_PURPOSES } from '../lib/travelPurposes';
 import './Home.css';
 
+const UPLOAD_HOST = `http://${window.location.hostname || 'localhost'}:8090`;
+
 const ratings = [1, 2, 3, 4, 5];
 
 const destinations = [
-  { name: 'Mirissa', count: '23 Hotels', image: 'https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=262&h=440&fit=crop' },
-  { name: 'Colombo', count: '156 Hotels', image: 'https://images.unsplash.com/photo-1586269648864-47a8b810f2a8?w=262&h=440&fit=crop' },
-  { name: 'Ella', count: '198 Hotels', image: 'https://images.unsplash.com/photo-1596397042349-2c0d9a9d4e9a?w=262&h=440&fit=crop' },
-  { name: 'Mirissa', count: '142 Hotels', image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=262&h=440&fit=crop' },
+  { name: 'Mirissa', count: '23 Hotels', image: `${UPLOAD_HOST}/uploads/mirissa.jpg` },
+  { name: 'Colombo', count: '156 Hotels', image: `${UPLOAD_HOST}/uploads/colombo.jpg` },
+  { name: 'Ella', count: '198 Hotels', image: `${UPLOAD_HOST}/uploads/ella.jpeg` },
+  { name: 'Galle', count: '142 Hotels', image: `${UPLOAD_HOST}/uploads/galle.jpg` },
 ];
 
 const testimonials = [
-  { name: 'Sarah Johnson', location: 'London, UK', text: 'The booking experience was seamless and the hotel recommendations were perfect for our honeymoon. Absolutely loved every moment!', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&h=60&fit=crop' },
-  { name: 'Michael Chen', location: 'Singapore', text: 'Found the perfect business hotel with all the amenities I needed. The smart filters made it so easy to narrow down exactly what I was looking for.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop' },
-  { name: 'Emma Rodriguez', location: 'Barcelona, Spain', text: 'Incredible luxury stays at competitive prices. The platform is intuitive and the hotel quality exceeded all my expectations!', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&h=60&fit=crop' },
+  { name: 'Nuwan Perera', location: 'Colombo', text: 'The booking experience was seamless and the hotel recommendations were perfect for our honeymoon in Kandy. Absolutely loved every moment!', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&h=60&fit=crop' },
+  { name: 'Chamari Silva', location: 'Kandy', text: 'Found the perfect business hotel with all the amenities I needed. The smart filters made it so easy to narrow down exactly what I was looking for.', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&h=60&fit=crop' },
+  { name: 'Kasun Fernando', location: 'Galle', text: 'Incredible stays along the south coast at great prices. The platform is intuitive and the hotel quality exceeded all my expectations!', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop' },
 ];
+
+function Reveal({ children, delay = 0 }) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setVisible(true);
+        obs.disconnect();
+      }
+    }, { threshold: 0.12 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`landing-reveal ${visible ? 'landing-reveal-visible' : ''}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
 
 function StarRating() {
   return (
@@ -190,18 +220,33 @@ export default function Home() {
 
   // Calendar popup state
   const [calOpen, setCalOpen] = useState(null); // 'in' | 'out' | null
+  const [heroCalOpen, setHeroCalOpen] = useState(null); // 'in' | 'out' | null
   const inFieldRef = useRef(null);
   const outFieldRef = useRef(null);
+  const heroInFieldRef = useRef(null);
+  const heroOutFieldRef = useRef(null);
 
   useEffect(() => {
     if (!calOpen) return;
     const handleMouseDown = (e) => {
+      if (e.target.closest && e.target.closest('.cal-popup')) return;
       const field = calOpen === 'in' ? inFieldRef.current : outFieldRef.current;
       if (field && !field.contains(e.target)) setCalOpen(null);
     };
     document.addEventListener('mousedown', handleMouseDown);
     return () => document.removeEventListener('mousedown', handleMouseDown);
   }, [calOpen]);
+
+  useEffect(() => {
+    if (!heroCalOpen) return;
+    const handleMouseDown = (e) => {
+      if (e.target.closest && e.target.closest('.cal-popup')) return;
+      const field = heroCalOpen === 'in' ? heroInFieldRef.current : heroOutFieldRef.current;
+      if (field && !field.contains(e.target)) setHeroCalOpen(null);
+    };
+    document.addEventListener('mousedown', handleMouseDown);
+    return () => document.removeEventListener('mousedown', handleMouseDown);
+  }, [heroCalOpen]);
 
   // Escape closes overlay + body scroll lock while open
   useEffect(() => {
@@ -282,16 +327,17 @@ export default function Home() {
 
       {/* ===== HERO ===== */}
       <section className="home-hero">
-        <div className="home-hero-bg" />
+        <div className="home-hero-bg" style={{ backgroundImage: `url(${UPLOAD_HOST}/uploads/landing-page-image.jpg)` }} />
         <div className="home-hero-overlay" />
         <div className="home-hero-content">
-          <h1 className="home-hero-title">Discover Luxury Stays Designed<br />Around Your Journey</h1>
-          <p className="home-hero-subtitle">Smart hotel discovery platform for travelers, families, business trips,<br />honeymoon stays, and unforgettable experiences.</p>
+          <span className="home-hero-eyebrow">Smart Hotel Discovery</span>
+          <h1 className="home-hero-title">Discover <span className="home-hero-title-accent">Luxury Stays</span> Designed<br />Around Your Journey</h1>
+          <p className="home-hero-subtitle">Smart hotel discovery platform for travelers, families, business trips, honeymoon stays, and unforgettable experiences.</p>
         </div>
 
         {/* ===== SEARCH BAR ===== */}
         <div className="home-search-bar">
-          <div className="search-field">
+          <div className="search-field search-field-location">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path d="M15 10.5a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" stroke="#2563EB" strokeWidth="1.5" />
               <path d="M19 19l-4.35-4.35" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" />
@@ -308,7 +354,7 @@ export default function Home() {
             </div>
           </div>
           <div className="search-divider" />
-          <div className="search-field">
+          <div className="search-field search-field-date" ref={heroInFieldRef}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <rect x="2.25" y="3.75" width="19.5" height="18" rx="2" stroke="#2563EB" strokeWidth="1.5" />
               <path d="M2.25 9.75h19.5" stroke="#2563EB" strokeWidth="1.5" />
@@ -316,15 +362,29 @@ export default function Home() {
             <div className="search-field-text">
               <span className="search-label">Check in</span>
               <input
-                type="date"
-                className="search-input search-input-date"
-                value={checkIn}
-                onChange={(e) => setCheckIn(e.target.value)}
+                type="text"
+                readOnly
+                className="search-input"
+                placeholder="Add date"
+                value={checkIn ? formatDisplay(checkIn) : ''}
+                onClick={() => setHeroCalOpen(heroCalOpen === 'in' ? null : 'in')}
               />
             </div>
+            {heroCalOpen === 'in' && (
+              <CalendarPicker
+                value={checkIn}
+                minDate={toDateInput(new Date())}
+                onSelect={(d) => {
+                  setCheckIn(d);
+                  if (checkOut && checkOut < d) setCheckOut('');
+                }}
+                onClose={() => setHeroCalOpen(null)}
+                anchorRef={heroInFieldRef}
+              />
+            )}
           </div>
           <div className="search-divider" />
-          <div className="search-field">
+          <div className="search-field search-field-date" ref={heroOutFieldRef}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <rect x="2.25" y="3.75" width="19.5" height="18" rx="2" stroke="#2563EB" strokeWidth="1.5" />
               <path d="M2.25 9.75h19.5" stroke="#2563EB" strokeWidth="1.5" />
@@ -332,12 +392,24 @@ export default function Home() {
             <div className="search-field-text">
               <span className="search-label">Check out</span>
               <input
-                type="date"
-                className="search-input search-input-date"
-                value={checkOut}
-                onChange={(e) => setCheckOut(e.target.value)}
+                type="text"
+                readOnly
+                className="search-input"
+                placeholder="Add date"
+                value={checkOut ? formatDisplay(checkOut) : ''}
+                onClick={() => setHeroCalOpen(heroCalOpen === 'out' ? null : 'out')}
               />
             </div>
+            {heroCalOpen === 'out' && (
+              <CalendarPicker
+                value={checkOut}
+                minDate={checkIn || toDateInput(new Date())}
+                onSelect={(d) => setCheckOut(d)}
+                onClose={() => setHeroCalOpen(null)}
+                alignRight
+                anchorRef={heroOutFieldRef}
+              />
+            )}
           </div>
           <div className="search-divider" />
           <div className="search-field">
@@ -372,23 +444,35 @@ export default function Home() {
           Additional filter
           {activeFilterCount > 0 && <span className="home-additional-filter-badge">{activeFilterCount}</span>}
         </div>
+
+        <div className="home-hero-cue">
+          <span>Scroll to explore</span>
+          <svg width="14" height="8" viewBox="0 0 14 8" fill="none">
+            <path d="M1 1l6 6 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
       </section>
 
       {/* ===== MY BOOKINGS ===== */}
       <section className="home-dashboard-section">
         <div className="home-section-container">
-          <div className="dashboard-header-row">
-            <div>
-              <h2 className="dashboard-title">My Bookings</h2>
-              <p className="dashboard-subtitle">Welcome back, {user?.name || 'Traveler'}</p>
+          <Reveal>
+            <div className="dashboard-header-row">
+              <div>
+                <span className="home-eyebrow">Your Stays</span>
+                <h2 className="dashboard-title">My Bookings</h2>
+                <p className="dashboard-subtitle">Welcome back, {user?.name || 'Traveler'}</p>
+              </div>
             </div>
-          </div>
+          </Reveal>
 
           {bookings.length === 0 ? (
-            <div className="dashboard-empty">
-              <h3>No bookings yet</h3>
-              <p>Start exploring hotels and book your first stay!</p>
-            </div>
+            <Reveal>
+              <div className="dashboard-empty">
+                <h3>No bookings yet</h3>
+                <p>Start exploring hotels and book your first stay!</p>
+              </div>
+            </Reveal>
           ) : (
             <div className="dashboard-table-wrap">
               <table className="dashboard-table">
@@ -433,21 +517,26 @@ export default function Home() {
       {/* ===== HOTELS ===== */}
       <section className="home-hotels-section">
         <div className="home-section-container">
-          <div className="hotels-header">
-            <div>
-              <h2 className="hotels-title">Curated Luxury Hotels</h2>
-              <p className="hotels-subtitle">{displayHotels.length} premium {displayHotels.length === 1 ? 'property' : 'properties'} match your preferences</p>
+          <Reveal>
+            <div className="hotels-header">
+              <div>
+                <span className="home-eyebrow">Curated For You</span>
+                <h2 className="hotels-title">Curated Luxury Hotels</h2>
+                <p className="hotels-subtitle">{displayHotels.length} premium {displayHotels.length === 1 ? 'property' : 'properties'} match your preferences</p>
+              </div>
+              <div className="sort-dropdown">
+                <span>Sort by: Recommended</span>
+                <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+                  <path d="M1 1.5L6 6.5L11 1.5" stroke="#1A2B49" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </div>
             </div>
-            <div className="sort-dropdown">
-              <span>Sort by: Recommended</span>
-              <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
-                <path d="M1 1.5L6 6.5L11 1.5" stroke="#1A2B49" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </div>
-          </div>
+          </Reveal>
           <div className="hotels-grid">
-            {displayHotels.map(hotel => (
-              <HotelCard key={hotel.id} hotel={hotel} />
+            {displayHotels.map((hotel, i) => (
+              <Reveal key={hotel.id} delay={i * 70}>
+                <HotelCard hotel={hotel} />
+              </Reveal>
             ))}
           </div>
         </div>
@@ -456,11 +545,16 @@ export default function Home() {
       {/* ===== TRENDING DESTINATIONS ===== */}
       <section className="home-destinations-section">
         <div className="home-section-container">
-          <h2 className="dest-title">Explore Trending Destinations</h2>
-          <p className="dest-subtitle">Handpicked locations for your next adventure</p>
+          <Reveal>
+            <span className="home-eyebrow home-eyebrow-center">Trending Destinations</span>
+            <h2 className="dest-title">Explore Trending Destinations</h2>
+            <p className="dest-subtitle">Handpicked locations for your next adventure</p>
+          </Reveal>
           <div className="dest-grid">
             {destinations.map((d, i) => (
-              <DestinationCard key={i} dest={d} />
+              <Reveal key={d.name} delay={i * 80}>
+                <DestinationCard dest={d} />
+              </Reveal>
             ))}
           </div>
         </div>
@@ -469,10 +563,15 @@ export default function Home() {
       {/* ===== TESTIMONIALS ===== */}
       <section className="home-testimonials-section">
         <div className="home-section-container">
-          <h2 className="testimonials-title">Loved by Travelers Islandwide</h2>
+          <Reveal>
+            <span className="home-eyebrow home-eyebrow-center">Traveler Stories</span>
+            <h2 className="testimonials-title">Loved by Travelers Islandwide</h2>
+          </Reveal>
           <div className="testimonials-grid">
             {testimonials.map((t, i) => (
-              <TestimonialCard key={i} t={t} />
+              <Reveal key={t.name} delay={i * 90}>
+                <TestimonialCard t={t} />
+              </Reveal>
             ))}
           </div>
         </div>
@@ -483,6 +582,7 @@ export default function Home() {
         <div className={`ov-modal ${showOverlay ? 'ov-modal-open' : ''}`} onClick={(e) => e.stopPropagation()}>
           <div className="ov-header">
             <div className="ov-header-left">
+              <span className="ov-eyebrow">Smart Filters</span>
               <h3 className="ov-title">Additional Filters</h3>
               <p className="ov-subtitle">Refine your stay with smart filters</p>
             </div>
@@ -498,8 +598,8 @@ export default function Home() {
               <label className="ov-label">Location</label>
               <div className="ov-field">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M11.25 3.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" stroke="#D4AF37" strokeWidth="1.25" />
-                  <path d="M14 14l-3.63-3.63" stroke="#D4AF37" strokeWidth="1.25" strokeLinecap="round" />
+                  <path d="M11.25 3.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" stroke="#F5A624" strokeWidth="1.25" />
+                  <path d="M14 14l-3.63-3.63" stroke="#F5A624" strokeWidth="1.25" strokeLinecap="round" />
                 </svg>
                 <input
                   type="text"
@@ -521,8 +621,8 @@ export default function Home() {
                     onClick={() => setCalOpen(calOpen === 'in' ? null : 'in')}
                   >
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <rect x="1.5" y="2.5" width="13" height="12" rx="1.5" stroke="#D4AF37" strokeWidth="1.25" />
-                      <path d="M4 1v3M12 1v3M1.5 6h13" stroke="#D4AF37" strokeWidth="1.25" />
+                      <rect x="1.5" y="2.5" width="13" height="12" rx="1.5" stroke="#F5A624" strokeWidth="1.25" />
+                      <path d="M4 1v3M12 1v3M1.5 6h13" stroke="#F5A624" strokeWidth="1.25" />
                     </svg>
                   </button>
                   <input
@@ -551,8 +651,8 @@ export default function Home() {
                     onClick={() => setCalOpen(calOpen === 'out' ? null : 'out')}
                   >
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <rect x="1.5" y="2.5" width="13" height="12" rx="1.5" stroke="#D4AF37" strokeWidth="1.25" />
-                      <path d="M4 1v3M12 1v3M1.5 6h13" stroke="#D4AF37" strokeWidth="1.25" />
+                      <rect x="1.5" y="2.5" width="13" height="12" rx="1.5" stroke="#F5A624" strokeWidth="1.25" />
+                      <path d="M4 1v3M12 1v3M1.5 6h13" stroke="#F5A624" strokeWidth="1.25" />
                     </svg>
                   </button>
                   <input
@@ -580,8 +680,8 @@ export default function Home() {
               <label className="ov-label">Guests & Rooms</label>
               <div className="ov-field">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M5.5 5a2 2 0 100-4 2 2 0 000 4z" stroke="#D4AF37" strokeWidth="1.25" />
-                  <path d="M1 14v-1.5a3 3 0 013-3h3a3 3 0 013 3V14" stroke="#D4AF37" strokeWidth="1.25" />
+                  <path d="M5.5 5a2 2 0 100-4 2 2 0 000 4z" stroke="#F5A624" strokeWidth="1.25" />
+                  <path d="M1 14v-1.5a3 3 0 013-3h3a3 3 0 013 3V14" stroke="#F5A624" strokeWidth="1.25" />
                 </svg>
                 <span className="ov-select-wrap">
                   <select value={ovGuests} onChange={(e) => setOvGuests(Number(e.target.value))}>
@@ -677,7 +777,7 @@ export default function Home() {
                     className={`ov-chip ${ovRating === r ? 'ov-chip-active' : ''}`}
                     onClick={() => setOvRating(ovRating === r ? null : r)}
                   >
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="#D4AF37">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="#F5A624">
                       <path d="M8 1l1.91 3.87 4.27.62-3.09 3.01.73 4.25L8 11.42l-3.82 2.01.73-4.25-3.09-3.01 4.27-.62L8 1z" />
                     </svg>
                     {r}

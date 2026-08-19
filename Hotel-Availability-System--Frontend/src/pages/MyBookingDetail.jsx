@@ -136,6 +136,7 @@ export default function MyBookingDetail() {
 
         <div className="mbd-header">
           <div>
+            <span className="mbd-eyebrow">StayVora Booking</span>
             <h1 className="mbd-header-title">Booking Details</h1>
             <p className="mbd-header-id">Booking ID: {bookingCode}</p>
           </div>

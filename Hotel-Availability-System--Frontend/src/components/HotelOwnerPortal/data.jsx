@@ -105,22 +105,22 @@ export const heroStats = [
 export const testimonials = [
   {
     text: '"Since joining this platform, our bookings have increased by 150%. The dashboard makes it so easy to manage everything in one place."',
-    name: 'Sarah Johnson',
-    hotel: 'Grand Plaza Hotel',
+    name: 'Nuwan Perera',
+    hotel: 'Sunset Villa - Mirissa',
     iconBg: '#F3E8FF',
     iconColor: '#9810FA',
   },
   {
     text: '"The real-time analytics help us make better business decisions. We can track everything from revenue to guest satisfaction effortlessly."',
-    name: 'Michael Chen',
-    hotel: 'Oceanview Resort',
+    name: 'Chamari Silva',
+    hotel: 'Ocean Pearl - Galle',
     iconBg: '#DBEAFE',
     iconColor: '#155DFC',
   },
   {
     text: '"Simple to use, powerful features, and excellent support. This platform has transformed how we manage our hotel business."',
-    name: 'Emily Rodriguez',
-    hotel: 'Mountain View Inn',
+    name: 'Kasun Fernando',
+    hotel: 'Ella Rock Retreat',
     iconBg: '#DCFCE7',
     iconColor: '#00A63E',
   },

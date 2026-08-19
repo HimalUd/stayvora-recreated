@@ -6,7 +6,16 @@ import './Navbar.css';
 export default function Navbar() {
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     function handleClick(e) {
@@ -19,17 +28,29 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
       <div className="navbar-inner">
-        <Link to="/home" className="navbar-logo">StayVora</Link>
+        <Link to="/home" className="navbar-logo" onClick={() => setMobileOpen(false)}>
+          <span className="navbar-logo-mark">S</span>
+          <span className="navbar-logo-text">StayVora</span>
+        </Link>
         <div className="navbar-links">
-          <NavLink to="/home" className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}>Home</NavLink>
+          <NavLink to="/home" end className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}>Home</NavLink>
           <NavLink to="/home" className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}>Hotels</NavLink>
           <NavLink to="/about" className="navbar-link">About Us</NavLink>
           <NavLink to="/contact" className="navbar-link">Contact Us</NavLink>
-          <NavLink to="/hotel-owner-portal" className="navbar-link">Hotel Owner Portal</NavLink>
+          <NavLink to="/hotel-owner-portal" className="navbar-link navbar-link-purple">Hotel Owner Portal</NavLink>
         </div>
         <div className="navbar-right" ref={menuRef}>
+          <button
+            className={`navbar-menu-toggle ${mobileOpen ? 'navbar-menu-toggle-open' : ''}`}
+            onClick={() => setMobileOpen(prev => !prev)}
+            aria-label="Toggle navigation menu"
+          >
+            <span />
+            <span />
+            <span />
+          </button>
           <div className="navbar-profile-btn" onClick={() => setMenuOpen(!menuOpen)}>
             <span className="navbar-username">{user?.name || 'User'}</span>
             <div className="navbar-avatar">{user?.name?.charAt(0)?.toUpperCase() || 'U'}</div>
@@ -61,6 +82,18 @@ export default function Navbar() {
               </button>
             </div>
           )}
+        </div>
+      </div>
+
+      <div className={`navbar-mobile-menu ${mobileOpen ? 'navbar-mobile-menu-open' : ''}`}>
+        <NavLink to="/home" end className="navbar-mobile-link" onClick={() => setMobileOpen(false)}>Home</NavLink>
+        <NavLink to="/home" className="navbar-mobile-link" onClick={() => setMobileOpen(false)}>Hotels</NavLink>
+        <NavLink to="/about" className="navbar-mobile-link" onClick={() => setMobileOpen(false)}>About Us</NavLink>
+        <NavLink to="/contact" className="navbar-mobile-link" onClick={() => setMobileOpen(false)}>Contact Us</NavLink>
+        <NavLink to="/hotel-owner-portal" className="navbar-mobile-link" onClick={() => setMobileOpen(false)}>Hotel Owner Portal</NavLink>
+        <div className="navbar-mobile-footer">
+          <Link to="/my-bookings" className="navbar-mobile-link" onClick={() => setMobileOpen(false)}>My Bookings</Link>
+          <button className="navbar-mobile-link navbar-mobile-logout" onClick={() => { setMobileOpen(false); logout(); }}>Logout</button>
         </div>
       </div>
     </nav>

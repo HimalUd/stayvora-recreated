@@ -6,7 +6,7 @@ export default function HowItWorksSection() {
   return (
     <section className="hop-steps">
       <div className="hop-section-container">
-        <SectionHeader title="How It Works" subtitle="Get started in just 3 simple steps" />
+        <SectionHeader eyebrow="Simple Setup" title="How It Works" subtitle="Get started in just 3 simple steps" />
         <div className="hop-steps-grid">
           {steps.map(s => (
             <div key={s.num} className="hop-step-card">

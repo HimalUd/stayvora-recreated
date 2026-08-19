@@ -10,6 +10,13 @@
   z-index: 100;
 }
 
+.cal-popup-fixed {
+  position: fixed;
+  z-index: 10000;
+  box-shadow: 0 16px 40px rgba(4, 16, 40, 0.3);
+  border: 1px solid rgba(10, 27, 51, 0.08);
+}
+
 .cal-popup-right {
   left: auto;
   right: 0;
