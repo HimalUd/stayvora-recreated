@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -19,6 +19,7 @@ import { placesAPI } from '../utils/api';
 import { EVENT_TYPES } from '../lib/eventTypes';
 import { AMENITIES } from '../lib/amenities';
 import CalendarPicker, { toDateInput, formatDisplay } from '../components/CalendarPicker/CalendarPicker';
+import badgeLight from '../assets/logos/badge-light.png';
 import './HotelOwnerDashboard.css';
 
 const statusColors = {
@@ -676,12 +677,9 @@ export default function HotelOwnerDashboard() {
       <header className="hod-topbar">
         <div className="hod-topbar-inner">
           <div className="hod-topbar-left">
-            <div className="hod-topbar-logo">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M9 22V12H15V22" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
+            <Link to="/" className="hod-topbar-logo">
+              <img src={badgeLight} alt="StayVora" className="hod-topbar-logo-img" />
+            </Link>
             <span className="hod-topbar-title">Hotel Manager Dashboard</span>
           </div>
           <div className="hod-topbar-right" ref={topbarRightRef}>

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import logoDark from '../../assets/logos/logo-dark.png';
 import './Navbar.css';
 
 export default function Navbar() {
@@ -31,8 +32,7 @@ export default function Navbar() {
     <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
       <div className="navbar-inner">
         <Link to="/home" className="navbar-logo" onClick={() => setMobileOpen(false)}>
-          <span className="navbar-logo-mark">S</span>
-          <span className="navbar-logo-text">StayVora</span>
+          <img src={logoDark} alt="StayVora" className="navbar-logo-img" />
         </Link>
         <div className="navbar-links">
           <NavLink to="/home" end className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}>Home</NavLink>

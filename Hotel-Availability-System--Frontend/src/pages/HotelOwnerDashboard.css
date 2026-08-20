@@ -32,14 +32,16 @@
 }
 
 .hod-topbar-logo {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #2563EB, #9810FA);
-  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+  text-decoration: none;
+}
+
+.hod-topbar-logo-img {
+  height: 36px;
+  width: auto;
+  display: block;
 }
 
 .hod-topbar-title {

@@ -32,30 +32,13 @@
 .navbar-logo {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
   text-decoration: none;
 }
 
-.navbar-logo-mark {
-  width: 40px;
+.navbar-logo-img {
   height: 40px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #2563EB, #9810FA);
-  color: #fff;
-  font-size: 1.25rem;
-  font-weight: 800;
-  font-family: 'Montserrat', sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
-}
-
-.navbar-logo-text {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #0A1B33;
-  letter-spacing: -0.5px;
+  width: auto;
+  display: block;
 }
 
 .navbar-links {

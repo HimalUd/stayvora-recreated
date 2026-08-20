@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import logoLight from '../../assets/logos/logo-light.png';
 import '../../pages/Landing.css';
 
 export default function Footer() {
@@ -8,8 +9,7 @@ export default function Footer() {
       <div className="landing-container landing-footer-inner">
         <div className="landing-footer-brand">
           <Link to="/" className="landing-footer-logo">
-            <span className="landing-footer-logo-mark">S</span>
-            StayVora
+            <img src={logoLight} alt="StayVora" className="landing-footer-logo-img" />
           </Link>
           <p className="landing-footer-desc">
             Experience luxury travel with StayVora. We connect discerning travelers with the

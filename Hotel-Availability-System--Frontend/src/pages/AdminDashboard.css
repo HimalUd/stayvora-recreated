@@ -22,25 +22,16 @@
 
 .ad-logo-wrap {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  text-decoration: none;
 }
 
-.ad-logo-icon {
-  width: 36px;
-  height: 36px;
-  background: #155DFC;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ad-logo-text {
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 14px;
+.ad-logo-img {
+  height: 34px;
+  width: auto;
+  display: block;
 }
 
 .ad-logo-badge {
@@ -48,7 +39,6 @@
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
-  margin-top: 4px;
 }
 
 /* ===== NAV ===== */
@@ -1096,7 +1086,6 @@
     width: 64px;
     min-width: 64px;
   }
-  .ad-logo-text,
   .ad-logo-badge,
   .ad-nav-item span,
   .ad-nav-chevron,
@@ -1112,8 +1101,11 @@
   .ad-sidebar-header {
     padding: 12px;
   }
-  .ad-logo-icon {
-    margin: 0 auto;
+  .ad-logo-wrap {
+    align-items: center;
+  }
+  .ad-logo-img {
+    height: 30px;
   }
   .ad-user-row {
     justify-content: center;

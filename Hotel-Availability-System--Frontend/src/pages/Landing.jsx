@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import logoLight from '../assets/logos/logo-light.png';
+import logoDark from '../assets/logos/logo-dark.png';
 import './Landing.css';
 
 const UPLOAD_HOST = `http://${window.location.hostname || 'localhost'}:8090`;
@@ -163,8 +165,7 @@ export default function Landing() {
       <nav className={`landing-navbar ${scrolled ? 'landing-navbar-scrolled' : ''}`}>
         <div className="landing-navbar-inner">
           <Link to="/" className="landing-logo" onClick={() => setMenuOpen(false)}>
-            <span className="landing-logo-mark">S</span>
-            <span className="landing-logo-text">StayVora</span>
+            <img src={scrolled ? logoDark : logoLight} alt="StayVora" className="landing-logo-img" />
           </Link>
 
           <div className="landing-nav-links">
@@ -489,8 +490,7 @@ export default function Landing() {
         <div className="landing-container landing-footer-inner">
           <div className="landing-footer-brand">
             <Link to="/" className="landing-footer-logo">
-              <span className="landing-footer-logo-mark">S</span>
-              StayVora
+              <img src={logoLight} alt="StayVora" className="landing-footer-logo-img" />
             </Link>
             <p className="landing-footer-desc">
               Experience luxury travel with StayVora. We connect discerning travelers with the

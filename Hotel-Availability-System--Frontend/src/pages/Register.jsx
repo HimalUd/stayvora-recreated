@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../context/AuthContext';
 import { registerSchema } from '../lib/validations';
+import badgeLight from '../assets/logos/badge-light.png';
 import '../styles/Auth.css';
 import './Register.css';
 
@@ -39,8 +40,7 @@ export default function Register() {
           />
           <div className="auth-image-overlay">
             <div className="auth-image-brand">
-              <span className="auth-image-brand-mark">S</span>
-              <span className="auth-image-brand-name">StayVora</span>
+              <img src={badgeLight} alt="StayVora" className="auth-image-brand-logo" />
             </div>
             <h2 className="auth-image-title">Your Gateway to Memorable Stays</h2>
             <p className="auth-image-subtitle">Join thousands of travelers booking handpicked hotels across Sri Lanka.</p>

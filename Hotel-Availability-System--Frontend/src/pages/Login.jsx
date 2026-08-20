@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../context/AuthContext';
 import { loginSchema } from '../lib/validations';
+import badgeLight from '../assets/logos/badge-light.png';
 import '../styles/Auth.css';
 import './Login.css';
 
@@ -77,8 +78,7 @@ export default function Login() {
           />
           <div className="auth-image-overlay">
             <div className="auth-image-brand">
-              <span className="auth-image-brand-mark">S</span>
-              <span className="auth-image-brand-name">StayVora</span>
+              <img src={badgeLight} alt="StayVora" className="auth-image-brand-logo" />
             </div>
             <h2 className="auth-image-title">Discover Sri Lanka's Finest Stays</h2>
             <p className="auth-image-subtitle">From beach villas in Mirissa to mountain retreats in Ella — your perfect stay awaits.</p>

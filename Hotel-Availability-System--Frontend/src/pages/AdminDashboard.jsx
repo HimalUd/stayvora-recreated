@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   useAdminHotels,
@@ -8,6 +8,7 @@ import {
   useAdminReviews,
   useDeleteHotel,
 } from '../hooks/useAdmin';
+import logoLight from '../assets/logos/logo-light.png';
 import './AdminDashboard.css';
 
 export default function AdminDashboard() {
@@ -89,17 +90,10 @@ export default function AdminDashboard() {
       {/* SIDEBAR */}
       <aside className="ad-sidebar">
         <div className="ad-sidebar-header">
-          <div className="ad-logo-wrap">
-            <div className="ad-logo-icon">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <rect x="3.33" y="1.67" width="13.33" height="16.67" rx="1.67" stroke="#020618" strokeWidth="1.67"/>
-              </svg>
-            </div>
-            <div>
-              <div className="ad-logo-text">StayEasy</div>
-              <div className="ad-logo-badge">Admin Console</div>
-            </div>
-          </div>
+          <Link to="/" className="ad-logo-wrap">
+            <img src={logoLight} alt="StayVora" className="ad-logo-img" />
+            <div className="ad-logo-badge">Admin Console</div>
+          </Link>
         </div>
 
         <nav className="ad-nav">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useHotel } from '../hooks/useHotels';
@@ -21,27 +21,40 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
+function formatMoney(n) {
+  return `$${Number(n || 0).toFixed(2)}`;
+}
+
 export default function Booking() {
   const { hotelId } = useParams();
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get('room');
-  const navigate = useNavigate();
   const { user } = useAuth();
 
   const { data: hotel, isLoading: loading, error } = useHotel(hotelId);
   const { data: rooms = [] } = useRooms(hotelId);
   const createBooking = useCreateBooking();
 
-  const room = rooms.find((r) => String(r.id) === String(roomId)) || rooms[0] || null;
+  const [selectedRoomId, setSelectedRoomId] = useState(roomId);
+  useEffect(() => {
+    if (rooms.length > 0) {
+      const target = rooms.find((r) => String(r.id) === String(selectedRoomId));
+      setSelectedRoomId(String(target?.id ?? rooms[0].id));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rooms.length]);
 
-  const today = new Date();
+  const room = rooms.find((r) => String(r.id) === String(selectedRoomId)) || rooms[0] || null;
+  const maxGuests = room?.capacity || 8;
+
   const toDateInput = (d) => d.toISOString().split('T')[0];
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmCode, setConfirmCode] = useState('');
   const [submitError, setSubmitError] = useState('');
+  const [copied, setCopied] = useState(false);
 
-  const { register, handleSubmit: formSubmit, watch, formState: { errors, isSubmitting } } = useForm({
+  const { register, handleSubmit: formSubmit, watch, setValue, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
       first_name: user?.first_name || (user?.name || '').split(' ')[0] || '',
@@ -64,6 +77,18 @@ export default function Booking() {
   const subtotal = nights * roomPrice;
   const taxes = subtotal * 0.12;
   const total = subtotal + taxes;
+
+  const selectRoom = (r) => {
+    setSelectedRoomId(String(r.id));
+    setValue('guests', Math.min(Number(guests || 2), r.capacity || 8));
+  };
+
+  const copyCode = () => {
+    navigator.clipboard?.writeText(confirmCode).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   const onSubmit = async (data) => {
     setSubmitError('');
@@ -119,15 +144,28 @@ export default function Booking() {
     <div className="bk-page">
       <div className="bk-container">
         <Link to={`/hotel/${hotelId}`} className="bk-back-link">← Back to hotel</Link>
-        <h1 className="bk-heading">Complete Your Booking</h1>
+
+        <div className="bk-head">
+          <span className="bk-eyebrow">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <rect x="1.33" y="7.33" width="13.33" height="7.33" rx="1.33" stroke="#2563EB" strokeWidth="1.33"/>
+              <path d="M4.67 7.33V5.33a3.33 3.33 0 0 1 6.66 0v2" stroke="#2563EB" strokeWidth="1.33" strokeLinecap="round"/>
+            </svg>
+            Secure Checkout
+          </span>
+          <h1 className="bk-heading">Complete Your Booking</h1>
+          <p className="bk-subtitle">{hotel.name} · {hotel.location}</p>
+        </div>
+
         <div className="bk-layout">
 
           {/* ===== LEFT - FORM ===== */}
           <div className="bk-main">
             <div className="bk-card">
               <div className="bk-card-header">
+                <span className="bk-step">1</span>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#101828"/>
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#0A1B33"/>
                 </svg>
                 <span>Guest Information</span>
               </div>
@@ -146,8 +184,8 @@ export default function Booking() {
                   <div className="bk-field">
                     <label>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <rect x="1.33" y="2.67" width="13.33" height="10.67" rx="1.33" stroke="#364153" strokeWidth="1.33"/>
-                        <path d="M1.33 4l6.67 4.67L14.67 4" stroke="#364153" strokeWidth="1.33"/>
+                        <rect x="1.33" y="2.67" width="13.33" height="10.67" rx="1.33" stroke="#64748B" strokeWidth="1.33"/>
+                        <path d="M1.33 4l6.67 4.67L14.67 4" stroke="#64748B" strokeWidth="1.33"/>
                       </svg>
                       Email
                     </label>
@@ -157,24 +195,49 @@ export default function Booking() {
                   <div className="bk-field">
                     <label>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <rect x="1.41" y="1.33" width="13.26" height="13.29" rx="2" stroke="#364153" strokeWidth="1.33"/>
+                        <rect x="1.41" y="1.33" width="13.26" height="13.29" rx="2" stroke="#64748B" strokeWidth="1.33"/>
                       </svg>
                       Phone
                     </label>
-                    <input type="tel" {...register('phone')} placeholder="Phone" />
+                    <input type="tel" {...register('phone')} placeholder="Phone (optional)" />
                   </div>
                 </div>
 
                 <div className="bk-card bk-card-sm">
                   <div className="bk-card-header">
+                    <span className="bk-step">2</span>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <rect x="2" y="4" width="20" height="16" rx="2" stroke="#101828" strokeWidth="1.5"/>
-                      <rect x="6" y="2" width="4" height="4" rx="1" stroke="#101828" strokeWidth="1.5"/>
-                      <rect x="14" y="2" width="4" height="4" rx="1" stroke="#101828" strokeWidth="1.5"/>
+                      <rect x="2" y="4" width="20" height="16" rx="2" stroke="#0A1B33" strokeWidth="1.5"/>
+                      <rect x="6" y="2" width="4" height="4" rx="1" stroke="#0A1B33" strokeWidth="1.5"/>
+                      <rect x="14" y="2" width="4" height="4" rx="1" stroke="#0A1B33" strokeWidth="1.5"/>
                     </svg>
                     <span>Booking Details</span>
                   </div>
-                  <div className="bk-form-grid">
+
+                  <div className="bk-room-list">
+                    {rooms.map((r) => {
+                      const active = String(r.id) === String(selectedRoomId);
+                      return (
+                        <button
+                          key={r.id}
+                          type="button"
+                          className={`bk-room-card ${active ? 'bk-room-card-active' : ''}`}
+                          onClick={() => selectRoom(r)}
+                        >
+                          <span className={`bk-radio ${active ? 'bk-radio-on' : ''}`}>
+                            {active && <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round"/></svg>}
+                          </span>
+                          <span className="bk-room-info">
+                            <span className="bk-room-name">{r.room_type}</span>
+                            {r.capacity && <span className="bk-room-cap">Sleeps up to {r.capacity} guests</span>}
+                          </span>
+                          <span className="bk-room-price">{formatMoney(r.price)}<em>/night</em></span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="bk-form-grid bk-dates-grid">
                     <div className="bk-field">
                       <label>Check-in</label>
                       <input type="date" {...register('check_in')} min={toDateInput(new Date())} />
@@ -188,7 +251,7 @@ export default function Booking() {
                     <div className="bk-field">
                       <label>Guests</label>
                       <select {...register('guests', { valueAsNumber: true })}>
-                        {[1,2,3,4,5,6,7,8].map(n => (
+                        {Array.from({ length: maxGuests }, (_, i) => i + 1).map(n => (
                           <option key={n} value={n}>{n} Guest{n > 1 ? 's' : ''}</option>
                         ))}
                       </select>
@@ -198,18 +261,19 @@ export default function Booking() {
 
                 <div className="bk-card bk-card-sm">
                   <div className="bk-card-header">
+                    <span className="bk-step">3</span>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <rect x="2" y="4" width="20" height="16" rx="2" stroke="#101828" strokeWidth="1.5"/>
-                      <path d="M2 10h20" stroke="#101828" strokeWidth="1.5"/>
+                      <rect x="2" y="4" width="20" height="16" rx="2" stroke="#0A1B33" strokeWidth="1.5"/>
+                      <path d="M2 10h20" stroke="#0A1B33" strokeWidth="1.5"/>
                     </svg>
                     <span>Special Requests</span>
                   </div>
-                  <textarea className="bk-textarea" {...register('special_requests')} placeholder="Any special requests or requirements?" rows={4} />
+                  <textarea className="bk-textarea" {...register('special_requests')} placeholder="Any special requests or requirements? (optional)" rows={4} />
                 </div>
 
                 {submitError && <p className="bk-error">{submitError}</p>}
                 <button type="submit" className="bk-submit-btn" disabled={isSubmitting}>
-                  {isSubmitting ? 'Booking...' : `Complete Booking — $${total.toFixed(2)}`}
+                  {isSubmitting ? 'Booking...' : `Complete Booking — ${formatMoney(total)}`}
                 </button>
               </form>
             </div>
@@ -218,6 +282,19 @@ export default function Booking() {
           {/* ===== RIGHT - SUMMARY ===== */}
           <div className="bk-sidebar">
             <div className="bk-summary-card">
+              <div className="bk-summary-thumb">
+                {hotel.image ? (
+                  <img src={hotel.image} alt={hotel.name} />
+                ) : (
+                  <div className="bk-summary-thumb-ph">{hotel.name.charAt(0)}</div>
+                )}
+                <span className="bk-summary-rating">
+                  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.8L10 14.77l-5.2 2.73.99-5.8-4.21-4.1 5.82-.85z"/>
+                  </svg>
+                  {hotel.rating || '4.5'}
+                </span>
+              </div>
               <div className="bk-summary-header">Booking Summary</div>
               <div className="bk-summary-body">
                 <div className="bk-summary-hotel">
@@ -230,34 +307,58 @@ export default function Booking() {
                 </div>
                 <div className="bk-summary-divider" />
                 <div className="bk-summary-detail">
-                  <span>Check-in:</span>
+                  <span>Check-in</span>
                   <span>{formatDate(checkIn) || 'Select'}</span>
                 </div>
                 <div className="bk-summary-detail">
-                  <span>Check-out:</span>
+                  <span>Check-out</span>
                   <span>{formatDate(checkOut) || 'Select'}</span>
                 </div>
                 <div className="bk-summary-detail">
-                  <span>Guests:</span>
+                  <span>Guests</span>
                   <span>{guests}</span>
                 </div>
                 <div className="bk-summary-detail">
-                  <span>Nights:</span>
+                  <span>Nights</span>
                   <span>{nights}</span>
                 </div>
                 <div className="bk-summary-divider" />
                 <div className="bk-summary-detail">
-                  <span>${roomPrice.toFixed(2)} × {nights} {nights === 1 ? 'night' : 'nights'}</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>{formatMoney(roomPrice)} × {nights} {nights === 1 ? 'night' : 'nights'}</span>
+                  <span>{formatMoney(subtotal)}</span>
                 </div>
                 <div className="bk-summary-detail">
                   <span>Taxes & fees</span>
-                  <span>${taxes.toFixed(2)}</span>
+                  <span>{formatMoney(taxes)}</span>
                 </div>
                 <div className="bk-summary-divider" />
                 <div className="bk-summary-total">
                   <span>Total</span>
-                  <span className="bk-total-amount">${total.toFixed(2)}</span>
+                  <span className="bk-total-amount">{formatMoney(total)}</span>
+                </div>
+
+                <div className="bk-trust">
+                  <span className="bk-trust-item">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="7" fill="#10B981"/>
+                      <path d="M5 8l2 2 4-4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                    Free cancellation
+                  </span>
+                  <span className="bk-trust-item">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="7" fill="#10B981"/>
+                      <path d="M5 8l2 2 4-4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                    No booking fees
+                  </span>
+                  <span className="bk-trust-item">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="7" fill="#10B981"/>
+                      <path d="M5 8l2 2 4-4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                    Secure checkout
+                  </span>
                 </div>
               </div>
             </div>
@@ -280,7 +381,17 @@ export default function Booking() {
 
             <div className="cf-code-box">
               <div className="cf-code-label">Confirmation Number</div>
-              <div className="cf-code-value">{confirmCode}</div>
+              <div className="cf-code-row">
+                <div className="cf-code-value">{confirmCode}</div>
+                <button type="button" className="cf-copy-btn" onClick={copyCode}>
+                  {copied ? 'Copied!' : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <rect x="5.33" y="5.33" width="9.34" height="9.33" rx="1.33" stroke="currentColor" strokeWidth="1.33"/>
+                      <path d="M10.67 5.33V3.33a1.33 1.33 0 0 0-1.34-1.33H3.33A1.33 1.33 0 0 0 2 3.33v6a1.33 1.33 0 0 0 1.33 1.34h2" stroke="currentColor" strokeWidth="1.33"/>
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
 
             <div className="cf-details">
@@ -306,7 +417,7 @@ export default function Booking() {
               </div>
               <div className="cf-row">
                 <span className="cf-row-label">Total Amount</span>
-                <span className="cf-row-value cf-total-value">${total.toFixed(2)}</span>
+                <span className="cf-row-value cf-total-value">{formatMoney(total)}</span>
               </div>
             </div>
 
@@ -315,8 +426,8 @@ export default function Booking() {
             </div>
 
             <div className="cf-actions">
-              <Link to="/home" className="cf-btn cf-btn-primary" onClick={() => setShowConfirm(false)}>Book Another Hotel</Link>
-              <Link to="/home" className="cf-btn cf-btn-outline" onClick={() => setShowConfirm(false)}>Dashboard</Link>
+              <Link to="/my-bookings" className="cf-btn cf-btn-primary" onClick={() => setShowConfirm(false)}>View My Bookings</Link>
+              <Link to="/home" className="cf-btn cf-btn-outline" onClick={() => setShowConfirm(false)}>Book Another Hotel</Link>
             </div>
           </div>
         </div>
