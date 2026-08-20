@@ -41,7 +41,7 @@ export default function Login() {
       <div className="auth-card">
         <div className="auth-form-side">
           <div className="auth-form-container">
-            <span className="auth-eyebrow">Welcome Back</span>
+            
             <h1 className="auth-title">Hello Again!</h1>
             <p className="auth-subtitle">Sign in to continue your stay journey</p>
 

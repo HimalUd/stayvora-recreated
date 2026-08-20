@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../context/AuthContext';
 import { registerSchema } from '../lib/validations';
-import badgeLight from '../assets/logos/badge-light.png';
+import badgeLight from '../assets/logos/badge-dark.png';
 import '../styles/Auth.css';
 import './Register.css';
 
@@ -65,7 +65,7 @@ export default function Register() {
         </div>
         <div className="auth-form-side">
           <div className="auth-form-container">
-            <span className="auth-eyebrow">Join StayVora</span>
+            
             <h1 className="auth-title">Create Your Account</h1>
             <p className="auth-subtitle">Start booking your perfect stay today</p>
 
@@ -79,7 +79,7 @@ export default function Register() {
                     <path d="M8 8a3 3 0 100-6 3 3 0 000 6z" stroke="#94A3B8" strokeWidth="1.33"/>
                     <path d="M2.5 14.5v-1a4.5 4.5 0 0111 0v1" stroke="#94A3B8" strokeWidth="1.33"/>
                   </svg>
-                  <input type="text" className="auth-input" placeholder="John Perera" {...register('name')} autoComplete="name" />
+                  <input type="text" className="auth-input" placeholder="Nuwan Perera" {...register('name')} autoComplete="name" />
                 </div>
                 {errors.name && <span className="auth-field-error">{errors.name.message}</span>}
               </div>

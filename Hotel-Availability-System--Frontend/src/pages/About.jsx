@@ -58,10 +58,10 @@ const values = [
 ];
 
 const team = [
-  { initials: 'NP', name: 'Nuwan Perera', role: 'Founder & CEO', bio: 'Hospitality veteran who built StayVora on a simple belief: every traveler deserves a stay that fits their journey.' },
-  { initials: 'CS', name: 'Chamari Silva', role: 'Chief Technology Officer', bio: 'Leads our engineering team, making smart hotel search and booking seamless for travelers across the island.' },
-  { initials: 'KF', name: 'Kasun Fernando', role: 'Head of Hotel Partnerships', bio: 'Grew our network of handpicked hotels from Colombo to Ella, always focusing on quality and fair pricing.' },
-  { initials: 'IW', name: 'Ishara Wickramasinghe', role: 'Head of Customer Experience', bio: 'Ensures every guest feels supported from the first search to the final checkout.' },
+  { initials: 'IC', name: 'Isuru Chathuranga', role: 'Leader', bio: 'Manages hotel details, room availability, pricing, and bookings with real-time updates to prevent double bookings..' },
+  { initials: 'HU', name: 'Himal Udaayanga', role: 'The designer', bio: 'Designed and developed the user experience of Stayvora, including the modern UI, location-based hotel search, and tourist attraction and event integration, while supporting security, testing, and evaluation..' },
+  { initials: 'RS', name: 'Rameshini Shashikala', bio: 'Developed the admin dashboard for managing customer accounts, bookings, and trip-planning features, while supporting system testing and evaluation.' },
+  { initials: 'AL', name: 'Ayandi Lohansa',  bio: 'Developed secure user authentication, booking and cancellation features, with booking records and confirmation management, while supporting system testing and evaluation.' },
 ];
 
 function Reveal({ children, delay = 0, className = '' }) {
@@ -243,7 +243,7 @@ export default function About() {
             </p>
             <div className="landing-stats">
               <div className="landing-stat">
-                <span className="landing-stat-number">10+</span>
+                <span className="landing-stat-number">100+</span>
                 <span className="landing-stat-label">Island Destinations</span>
               </div>
               <div className="landing-stat">

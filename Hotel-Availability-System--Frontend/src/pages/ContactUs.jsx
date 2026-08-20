@@ -17,7 +17,7 @@ const contactCards = [
     ),
     title: 'Call Us',
     desc: 'Speak directly with our support team',
-    value: '+94 11 234 5678',
+    value: '+94 766576477',
     meta: 'Mon–Fri, 8am–8pm (SL Time)'
   },
   {
@@ -52,7 +52,7 @@ const contactCards = [
     ),
     title: 'Visit Us',
     desc: 'Come see us at our office',
-    value: '42 Galle Road, Colombo, Sri Lanka',
+    value: 'Uva wellassa university, Passara road, Badulla, Sri Lanka.',
     meta: 'Mon–Fri, 9am–5pm (SL Time)'
   }
 ];
@@ -342,7 +342,7 @@ export default function ContactUs() {
               <div>
                 <h4>StayVora Headquarters</h4>
                 <p className="cu-hq-address">
-                  42 Galle Road, Colombo 03<br />
+                  Uva wellassa university, Passara road, Badulla, Sri Lanka.<br />
                   Sri Lanka
                 </p>
                 <div className="cu-hq-hours">
