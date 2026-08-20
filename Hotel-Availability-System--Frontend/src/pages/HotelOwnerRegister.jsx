@@ -100,7 +100,7 @@ export default function HotelOwnerRegister() {
             <form onSubmit={handleSubmit(onSubmit)} className="hor-form-body">
               <div className="hor-field">
                 <label className="hor-label">Full Name *</label>
-                <input className="hor-input" placeholder="John Perera" {...register('name')} />
+                <input className="hor-input" placeholder="Nuwan Perera" {...register('name')} />
                 {errors.name && <span className="hor-error">{errors.name.message}</span>}
               </div>
 

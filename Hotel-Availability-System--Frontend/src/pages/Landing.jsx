@@ -553,13 +553,7 @@ export default function Landing() {
             </form>
           </div>
         </div>
-        <div className="landing-footer-creds">
-          <div className="landing-container">
-            <span>Admin: <b>admin@stayeasy.com</b> / <b>admin123</b></span>
-            <span className="landing-footer-creds-sep">|</span>
-            <span>Demo: <b>demo@stayvora.com</b> / <b>demo123</b></span>
-          </div>
-        </div>
+        
         <div className="landing-footer-bottom">
           <div className="landing-container">
             <p>&copy; {new Date().getFullYear()} StayVora. All rights reserved.</p>
