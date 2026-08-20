@@ -63,8 +63,8 @@ const faqs = [
     a: 'Head to "My Bookings" in your account, find the booking, and use the cancel or modify options. You can also contact our support team and we will assist you within 24 hours.'
   },
   {
-    q: 'What payment methods do you accept?',
-    a: 'We accept major credit and debit cards, bank transfers, and popular local payment methods in Sri Lanka. All payments are processed securely.'
+    q: 'How we do the payments?',
+    a: 'you can connect with the hotel and you can do the payments at the hotel or other methods that requesting by the hotel side.'
   },
   {
     q: 'Is my personal information secure?',
