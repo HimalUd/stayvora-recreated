@@ -12,7 +12,7 @@ export function useOwnerBookings(hotelId) {
   return useQuery({
     queryKey: ['bookings', 'owner', hotelId || 'all'],
     queryFn: () => bookingsAPI.listOwner(hotelId).then(r => r.data.bookings || []),
-    enabled: !!hotelId,
+    enabled: true,
   });
 }
 

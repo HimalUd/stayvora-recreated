@@ -40,3 +40,15 @@ export function useDeleteHotel() {
     },
   });
 }
+
+export function useDeleteReview() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => adminAPI.deleteReview(id).then(r => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'reviews'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'hotels'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] });
+    },
+  });
+}

@@ -69,7 +69,10 @@ const imageSchema = z.object({
 export default function HotelOwnerDashboard() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const [selectedHotelId, setSelectedHotelId] = useState(null);
+  const [selectedHotelId, setSelectedHotelId] = useState(() => {
+    const saved = sessionStorage.getItem('hod_selected_hotel');
+    return saved ? Number(saved) : null;
+  });
   const { data: bookings = [], isLoading: loading } = useOwnerBookings(selectedHotelId);
   const { data: hotels = [], isLoading: hotelsLoading } = useOwnerHotels();
   const { data: notifData, refetch: refetchNotifications } = useNotifications();
@@ -118,9 +121,14 @@ export default function HotelOwnerDashboard() {
   }, [eventCalOpen]);
 
   useEffect(() => {
-    if (hotels.length > 0 && !selectedHotelId) {
-      setSelectedHotelId(hotels[0].id);
-    }
+    if (hotels.length === 0) return;
+    const saved = sessionStorage.getItem('hod_selected_hotel');
+    const savedId = saved ? Number(saved) : null;
+    const currentValid = selectedHotelId && hotels.some(h => h.id === selectedHotelId);
+    const fallback = (currentValid && selectedHotelId)
+      || (savedId && hotels.some(h => h.id === savedId) && savedId)
+      || hotels[0].id;
+    if (fallback !== selectedHotelId) setSelectedHotelId(fallback);
   }, [hotels, selectedHotelId]);
 
   useEffect(() => {
@@ -260,7 +268,10 @@ export default function HotelOwnerDashboard() {
             <div
               key={b.id}
               className="hod-booking-card"
-              onClick={() => navigate(`/hotel-owner-booking/${b.booking_code}`)}
+              onClick={() => {
+                if (b.hotel_id) sessionStorage.setItem('hod_selected_hotel', String(b.hotel_id));
+                navigate(`/hotel-owner-booking/${b.booking_code}`);
+              }}
             >
               <div className="hod-booking-top">
                 <div className="hod-booking-user">
@@ -726,6 +737,7 @@ export default function HotelOwnerDashboard() {
                           if (n.type === 'review') {
                             navigate('/hotel-owner-reviews');
                           } else if (n.booking_code) {
+                            if (n.hotel_id) sessionStorage.setItem('hod_selected_hotel', String(n.hotel_id));
                             navigate(`/hotel-owner-booking/${n.booking_code}`);
                           }
                           setShowNotifications(false);
@@ -818,7 +830,11 @@ export default function HotelOwnerDashboard() {
             <select
               className="hod-select"
               value={selectedHotelId || ''}
-              onChange={e => setSelectedHotelId(Number(e.target.value))}
+              onChange={e => {
+                const id = Number(e.target.value);
+                setSelectedHotelId(id);
+                sessionStorage.setItem('hod_selected_hotel', String(id));
+              }}
             >
               <option value="" disabled>Choose a hotel</option>
               {hotels.map(h => (

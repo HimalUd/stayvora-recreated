@@ -312,6 +312,61 @@
   margin: 0;
 }
 
+.hop-growth {
+  margin-top: 56px;
+  padding: 40px 48px;
+  background: linear-gradient(135deg, #0A1B33 0%, #1A2B49 60%, #2563EB 150%);
+  border-radius: 20px;
+}
+
+.hop-growth-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 28px;
+  text-align: center;
+}
+
+.hop-growth-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.hop-growth-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.hop-growth-check {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hop-growth-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.hop-growth-desc {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin: 0;
+}
+
 /* ===== HOW IT WORKS ===== */
 .hop-steps {
   padding: 96px 0;
@@ -636,8 +691,13 @@
 
   .hop-features-grid,
   .hop-steps-grid,
-  .hop-testimonials-grid {
+  .hop-testimonials-grid,
+  .hop-growth-grid {
     grid-template-columns: 1fr;
+  }
+
+  .hop-growth {
+    padding: 28px 24px;
   }
 
   .hop-stats-grid {

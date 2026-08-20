@@ -5,7 +5,7 @@ import './HotelOwnerBookingDetail.css';
 
 const statusColors = {
   pending: '#F59E0B',
-  confirmed: '#1976D2',
+  confirmed: '#2563EB',
   cancelled: '#D32F2F',
 };
 
@@ -91,7 +91,7 @@ export default function HotelOwnerBookingDetail() {
       <div className="hobd-content">
         <button className="hobd-back-btn" onClick={() => navigate('/hotel-owner-dashboard')}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <rect x="3.33" y="3.33" width="4.67" height="9.33" rx="1.33" stroke="#1976D2" strokeWidth="1.33"/>
+            <rect x="3.33" y="3.33" width="4.67" height="9.33" rx="1.33" stroke="#2563EB" strokeWidth="1.33"/>
           </svg>
           Back to Dashboard
         </button>
@@ -111,8 +111,8 @@ export default function HotelOwnerBookingDetail() {
             <div className="hobd-card-heading">
               <div className="hobd-card-icon" style={{ background: '#E0E7FF' }}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <rect x="5" y="15" width="14" height="6" rx="1" stroke="#4F39F6" strokeWidth="2"/>
-                  <rect x="8" y="3" width="8" height="8" rx="4" stroke="#4F39F6" strokeWidth="2"/>
+                  <rect x="5" y="15" width="14" height="6" rx="1" stroke="#2563EB" strokeWidth="2"/>
+                  <rect x="8" y="3" width="8" height="8" rx="4" stroke="#2563EB" strokeWidth="2"/>
                 </svg>
               </div>
               <span className="hobd-card-title">Customer Information</span>
@@ -165,7 +165,7 @@ export default function HotelOwnerBookingDetail() {
             <div className="hobd-card-heading">
               <div className="hobd-card-icon" style={{ background: '#DBEAFE' }}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <rect x="3" y="4" width="18" height="18" rx="2" stroke="#155DFC" strokeWidth="2"/>
+                  <rect x="3" y="4" width="18" height="18" rx="2" stroke="#2563EB" strokeWidth="2"/>
                 </svg>
               </div>
               <span className="hobd-card-title">Booking Information</span>
@@ -219,8 +219,8 @@ export default function HotelOwnerBookingDetail() {
           <div className="hobd-card-heading">
             <div className="hobd-card-icon" style={{ background: '#FEF3C6' }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <rect x="4" y="2" width="16" height="20" rx="2" stroke="#E17100" strokeWidth="2"/>
-                <rect x="14" y="2" width="6" height="6" rx="1" stroke="#E17100" strokeWidth="2"/>
+                <rect x="4" y="2" width="16" height="20" rx="2" stroke="#F5A624" strokeWidth="2"/>
+                <rect x="14" y="2" width="6" height="6" rx="1" stroke="#F5A624" strokeWidth="2"/>
               </svg>
             </div>
             <span className="hobd-card-title">Special Requests</span>

@@ -169,6 +169,54 @@
   margin: 4px 0 0;
 }
 
+/* ===== OVERVIEW HEAD ===== */
+.ad-overview-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.ad-eyebrow {
+  color: #FFB900;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  line-height: 16px;
+}
+
+.ad-overview-cta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: #1447E6;
+  color: #020618;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.ad-overview-cta:hover {
+  opacity: 0.85;
+}
+
+.ad-stat-hover {
+  cursor: pointer;
+  transition: outline-color 0.15s;
+}
+
+.ad-stat-hover:hover {
+  outline-color: #1447E6;
+}
+
 /* ===== STATS ===== */
 .ad-stats {
   display: flex;
@@ -280,6 +328,46 @@
 
 .ad-hotel-row:last-child {
   border-bottom: none;
+}
+
+.ad-rank {
+  width: 20px;
+  color: #62748E;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+
+/* ===== BOOKING CHIPS ===== */
+.ad-booking-chips {
+  display: flex;
+  gap: 8px;
+  padding: 12px 24px;
+  border-bottom: 1px solid #1D293D;
+}
+
+.ad-booking-chip {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+.ad-booking-chip-confirmed {
+  color: #00D492;
+  background: rgba(0, 212, 146, 0.12);
+}
+
+.ad-booking-chip-pending {
+  color: #FFB900;
+  background: rgba(255, 185, 0, 0.12);
+}
+
+.ad-booking-chip-cancelled {
+  color: #FF6467;
+  background: rgba(255, 100, 103, 0.12);
 }
 
 .ad-hotel-img {
@@ -402,6 +490,37 @@
   overflow: hidden;
 }
 
+.ad-hotel-card-img-src {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ===== REVIEW FILTER BUTTON ===== */
+.ad-rev-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #0F172B;
+  border: none;
+  border-radius: 14px;
+  outline: 1px solid #1D293D;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: outline-color 0.15s, background 0.15s;
+}
+
+.ad-rev-filter-btn:hover {
+  outline-color: #1447E6;
+}
+
+.ad-rev-filter-active {
+  background: rgba(251, 44, 54, 0.08);
+  outline: 1px solid rgba(251, 44, 54, 0.30);
+}
+
 /* ===== HOTEL DETAIL MODAL ===== */
 .ad-modal-hotel {
   width: 670px;
@@ -501,6 +620,38 @@
   font-weight: 400;
   line-height: 16px;
   padding-left: 4px;
+}
+
+/* ===== HOTEL MODAL STATS ===== */
+.ad-hotel-modal-stats {
+  display: flex;
+  gap: 12px;
+  padding-top: 20px;
+}
+
+.ad-hotel-modal-stat {
+  flex: 1;
+  text-align: center;
+  padding: 14px 8px;
+  background: #1D293D;
+  border-radius: 14px;
+}
+
+.ad-hotel-modal-stat-value {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.ad-hotel-modal-stat-label {
+  color: #62748E;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  line-height: 16px;
+  padding-top: 2px;
 }
 
 .ad-hotel-modal-section {
@@ -741,6 +892,187 @@
 
 .ad-rev-search-input:focus {
   outline: 1px solid #1447E6;
+}
+
+.ad-rev-sort {
+  padding: 10px 16px;
+  background: #0F172B;
+  border: none;
+  border-radius: 14px;
+  outline: 1px solid #1D293D;
+  color: #CAD5E2;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.ad-rev-sort:focus {
+  outline: 1px solid #1447E6;
+}
+
+.ad-rev-card-hotel-link {
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.ad-rev-card-hotel-link:hover {
+  color: #1447E6;
+}
+
+/* ===== VERIFIED BADGE ===== */
+.ad-rev-badge-verified {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: rgba(0, 212, 146, 0.10);
+  border-radius: 100px;
+  color: #00D492;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.ad-rev-delete {
+  color: #FF6467;
+  transition: background 0.15s;
+}
+
+.ad-rev-delete:hover {
+  background: rgba(255, 100, 103, 0.12);
+}
+
+/* ===== HOTEL BREAKDOWN ===== */
+.ad-rev-summary-row {
+  display: flex;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.ad-rev-hotel-breakdown {
+  flex: 1;
+}
+
+.ad-rev-breakdown-title {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  margin-bottom: 12px;
+}
+
+.ad-rev-breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ad-rev-breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.ad-rev-breakdown-row:hover {
+  opacity: 0.8;
+}
+
+.ad-rev-breakdown-name {
+  width: 30%;
+  min-width: 90px;
+  color: #CAD5E2;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ad-rev-breakdown-bar {
+  flex: 1;
+  height: 6px;
+  background: #1D293D;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.ad-rev-breakdown-bar-fill {
+  display: block;
+  height: 100%;
+  background: #FFB900;
+  border-radius: 100px;
+}
+
+.ad-rev-breakdown-meta {
+  width: 64px;
+  text-align: right;
+  color: #62748E;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+/* ===== PAGINATION ===== */
+.ad-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding-top: 24px;
+}
+
+.ad-pagination-btn {
+  padding: 8px 16px;
+  background: #0F172B;
+  border: none;
+  border-radius: 10px;
+  outline: 1px solid #1D293D;
+  color: #CAD5E2;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: outline-color 0.15s;
+}
+
+.ad-pagination-btn:hover:not(:disabled) {
+  outline-color: #1447E6;
+}
+
+.ad-pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ad-pagination-info {
+  color: #62748E;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+/* ===== DELETE CONFIRM ===== */
+.ad-delete-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto;
+  background: rgba(255, 100, 103, 0.10);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ad-delete-text {
+  color: #90A1B9;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  padding: 12px 8px 0;
+  margin: 0;
 }
 
 /* Review cards */
@@ -1077,6 +1409,9 @@
     flex: 1 1 40%;
   }
   .ad-panels {
+    flex-direction: column;
+  }
+  .ad-rev-summary-row {
     flex-direction: column;
   }
 }

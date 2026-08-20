@@ -57,13 +57,37 @@ class AdminController extends Controller {
     public function reviews(): void {
         $this->requireAdmin();
         $reviews = $this->reviewModel->fetchAll(
-            "SELECT r.*, h.name as hotel_name, u.name as user_name
+            "SELECT r.*, h.name as hotel_name, u.name as user_name, u.email as user_email
              FROM reviews r
              JOIN hotels h ON r.hotel_id = h.id
              JOIN users u ON r.user_id = u.id
              ORDER BY r.created_at DESC"
         );
         $this->json(["reviews" => $reviews]);
+    }
+
+    public function deleteReview(): void {
+        $this->requireAdmin();
+        $input = $this->getJsonInput();
+        $id = $input['id'] ?? $_GET['id'] ?? null;
+
+        if (!$id || !is_numeric($id)) {
+            $this->json(["message" => "Review ID is required"], 400);
+        }
+
+        $id = (int)$id;
+        $review = $this->reviewModel->findById($id);
+        if (!$review) {
+            $this->json(["message" => "Review not found"], 404);
+        }
+
+        try {
+            $this->reviewModel->query("DELETE FROM reviews WHERE id = ?", [$id]);
+            $this->reviewModel->updateHotelRating((int)$review['hotel_id']);
+            $this->json(["message" => "Review removed successfully"]);
+        } catch (Exception $e) {
+            $this->json(["message" => "Failed to remove review"], 500);
+        }
     }
 
     public function deleteHotel(): void {

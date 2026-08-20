@@ -12,40 +12,55 @@ import {
 
 export const features = [
   {
-    icon: AnalyticsIcon,
-    bg: '#F3E8FF',
-    title: 'Real-Time Analytics',
-    desc: 'Track bookings, revenue, and performance metrics in real-time with detailed analytics dashboard',
-  },
-  {
     icon: GlobeIcon,
     bg: '#DBEAFE',
-    title: 'Global Reach',
-    desc: 'Connect with travelers from around the world and expand your customer base instantly',
+    title: 'Local Reach, Lanka-Wide',
+    desc: 'Get discovered by travelers searching for stays in your area — from Colombo business trips to Ella hill escapes and Mirissa beach holidays.',
+  },
+  {
+    icon: AnalyticsIcon,
+    bg: '#F3E8FF',
+    title: 'Seasonal Pricing Insights',
+    desc: 'Understand how peak season (Dec–Apr) vs off-peak demand shapes your bookings, so you can price smart and fill rooms all year round.',
   },
   {
     icon: CalendarIcon,
     bg: '#DCFCE7',
     title: 'Booking Management',
-    desc: 'Manage all your reservations in one place with powerful filtering and search capabilities',
+    desc: 'Manage all reservations in one dashboard — confirm stays, filter by dates, and track every booking across your property.',
   },
   {
     icon: RevenueIcon,
     bg: '#FFEDD4',
     title: 'Revenue Tracking',
-    desc: 'Monitor your earnings, track payment status, and generate financial reports effortlessly',
+    desc: 'Monitor earnings per booking, spot your best-performing room types, and grow your monthly revenue with clear reports.',
   },
   {
     icon: ShieldIcon,
     bg: '#FCE7F3',
-    title: 'Secure Platform',
-    desc: "Bank-level security to protect your data and your guests' information",
+    title: 'Reputation & Reviews',
+    desc: 'Build guest trust with verified reviews. Respond to feedback, improve your stay experience, and turn happy guests into repeat bookings.',
   },
   {
     icon: BellIcon,
     bg: '#E0E7FF',
-    title: 'Instant Notifications',
-    desc: 'Get notified immediately when new bookings arrive or guests check in',
+    title: 'Instant Booking Alerts',
+    desc: 'Get notified the moment a new booking lands, so you can confirm fast and never miss a reservation.',
+  },
+];
+
+export const growthPoints = [
+  {
+    title: 'List for Free',
+    desc: 'Register your hotel with photos, amenities and room details — no upfront costs, no listing fees.',
+  },
+  {
+    title: 'Get Found by Travelers',
+    desc: 'The moment a guest searches for stays in your city or area, your hotel appears in their results.',
+  },
+  {
+    title: 'Turn Guests into Regulars',
+    desc: 'Direct bookings, guest reviews and your own dashboard help you build long-term relationships and repeat stays.',
   },
 ];
 

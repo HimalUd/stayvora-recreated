@@ -1,4 +1,6 @@
 <?php
+define('SESSION_TIMEOUT', 3600); // 1 hour of inactivity
+
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.gc_maxlifetime', 86400);
     ini_set('session.use_strict_mode', 1);
@@ -17,6 +19,30 @@ if (session_status() === PHP_SESSION_NONE) {
         echo json_encode(["message" => "Failed to start session"]);
         exit;
     }
+}
+
+function expireSessionCookie() {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
+}
+
+function destroySession() {
+    $_SESSION = [];
+    expireSessionCookie();
+    session_destroy();
+}
+
+// Automatic logout after a period of inactivity
+if (isset($_SESSION['last_activity']) && (time() - (int)$_SESSION['last_activity']) > SESSION_TIMEOUT) {
+    destroySession();
+}
+
+// Refresh the activity timestamp for logged-in users
+if (session_status() === PHP_SESSION_ACTIVE && isLoggedIn()) {
+    $_SESSION['last_activity'] = time();
 }
 
 function isLoggedIn() {

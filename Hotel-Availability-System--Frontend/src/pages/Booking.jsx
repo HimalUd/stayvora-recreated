@@ -51,6 +51,7 @@ export default function Booking() {
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmCode, setConfirmCode] = useState('');
+  const [guestName, setGuestName] = useState('');
   const [submitError, setSubmitError] = useState('');
   const [copied, setCopied] = useState(false);
 
@@ -106,6 +107,7 @@ export default function Booking() {
         special_requests: data.special_requests,
       });
       setConfirmCode(res?.booking?.booking_code || res?.confirmation_code || `BKDQ${Math.random().toString(36).toUpperCase().slice(2, 10)}`);
+      setGuestName(data.first_name);
       setShowConfirm(true);
     } catch (err) {
       setSubmitError(err.response?.data?.message || 'Booking failed. Please ensure you are logged in and try again.');
@@ -367,23 +369,36 @@ export default function Booking() {
       </div>
 
       {/* ===== CONFIRMATION OVERLAY ===== */}
-      <div className={`cf-overlay ${showConfirm ? 'cf-active' : ''}`} onClick={() => setShowConfirm(false)}>
-        <div className={`cf-modal ${showConfirm ? 'cf-modal-open' : ''}`} onClick={(e) => e.stopPropagation()}>
-          <div className="cf-modal-inner">
-            <div className="cf-check-wrap">
-              <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-                <rect x="6.67" y="6.66" width="66.67" height="66.67" rx="33.33" stroke="#00A63E" strokeWidth="6.67"/>
-                <path d="M26.67 40l10 10 16.66-16.67" stroke="#00A63E" strokeWidth="6.67" strokeLinecap="round"/>
+      <div className={`bkc-overlay ${showConfirm ? 'bkc-active' : ''}`} onClick={() => setShowConfirm(false)}>
+        <div className={`bkc-modal ${showConfirm ? 'bkc-modal-open' : ''}`} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Booking confirmation">
+          <button type="button" className="bkc-close" onClick={() => setShowConfirm(false)} aria-label="Close confirmation">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+            </svg>
+          </button>
+
+          <div className="bkc-hero">
+            <div className="bkc-check-wrap">
+              <span className="bkc-ring bkc-ring-1" />
+              <span className="bkc-ring bkc-ring-2" />
+              <svg className="bkc-check" width="72" height="72" viewBox="0 0 80 80" fill="none">
+                <circle cx="40" cy="40" r="33" fill="#10B981" className="bkc-check-circle" />
+                <path d="M26.67 40l10 10 16.66-16.67" stroke="#fff" strokeWidth="6.67" strokeLinecap="round" className="bkc-check-path" />
               </svg>
             </div>
-            <h2 className="cf-heading">Booking Confirmed!</h2>
-            <p className="cf-subtitle">Your reservation has been successfully confirmed</p>
+            <h2 className="bkc-heading">Booking Confirmed!</h2>
+            <p className="bkc-subtitle">
+              Thank you, <span className="bkc-guest-name">{guestName || 'Guest'}</span>!
+            </p>
+            <p className="bkc-subtitle bkc-subtitle-2">Your reservation has been confirmed</p>
+          </div>
 
-            <div className="cf-code-box">
-              <div className="cf-code-label">Confirmation Number</div>
-              <div className="cf-code-row">
-                <div className="cf-code-value">{confirmCode}</div>
-                <button type="button" className="cf-copy-btn" onClick={copyCode}>
+          <div className="bkc-body">
+            <div className="bkc-code-box">
+              <div className="bkc-code-label">Confirmation Number</div>
+              <div className="bkc-code-row">
+                <div className="bkc-code-value">{confirmCode}</div>
+                <button type="button" className="bkc-copy-btn" onClick={copyCode} aria-label="Copy confirmation number">
                   {copied ? 'Copied!' : (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <rect x="5.33" y="5.33" width="9.34" height="9.33" rx="1.33" stroke="currentColor" strokeWidth="1.33"/>
@@ -394,40 +409,66 @@ export default function Booking() {
               </div>
             </div>
 
-            <div className="cf-details">
-              <div className="cf-row">
-                <span className="cf-row-label">Hotel</span>
-                <span className="cf-row-value">{hotel.name}</span>
+            <div className="bkc-hotel-card">
+              {hotel.image ? (
+                <img className="bkc-hotel-img" src={hotel.image} alt={hotel.name} />
+              ) : (
+                <div className="bkc-hotel-img bkc-hotel-img-ph">{hotel.name.charAt(0)}</div>
+              )}
+              <div className="bkc-hotel-info">
+                <div className="bkc-hotel-name">{hotel.name}</div>
+                <div className="bkc-hotel-loc">{hotel.location}</div>
+                <div className="bkc-hotel-room">{room.room_type}</div>
               </div>
-              <div className="cf-row">
-                <span className="cf-row-label">Room Type</span>
-                <span className="cf-row-value">{room.room_type}</span>
+              <span className="bkc-hotel-rating">
+                <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.8L10 14.77l-5.2 2.73.99-5.8-4.21-4.1 5.82-.85z"/>
+                </svg>
+                {hotel.rating || '4.5'}
+              </span>
+            </div>
+
+            <div className="bkc-grid">
+              <div className="bkc-cell">
+                <span className="bkc-cell-label">Check-in</span>
+                <span className="bkc-cell-value">{formatDate(checkIn)}</span>
               </div>
-              <div className="cf-row">
-                <span className="cf-row-label">Check-in</span>
-                <span className="cf-row-value">{formatDate(checkIn)}</span>
+              <div className="bkc-cell">
+                <span className="bkc-cell-label">Check-out</span>
+                <span className="bkc-cell-value">{formatDate(checkOut)}</span>
               </div>
-              <div className="cf-row">
-                <span className="cf-row-label">Check-out</span>
-                <span className="cf-row-value">{formatDate(checkOut)}</span>
+              <div className="bkc-cell">
+                <span className="bkc-cell-label">Guests</span>
+                <span className="bkc-cell-value">{guests} {guests > 1 ? 'guests' : 'guest'}</span>
               </div>
-              <div className="cf-row">
-                <span className="cf-row-label">Guests</span>
-                <span className="cf-row-value">{guests}</span>
-              </div>
-              <div className="cf-row">
-                <span className="cf-row-label">Total Amount</span>
-                <span className="cf-row-value cf-total-value">{formatMoney(total)}</span>
+              <div className="bkc-cell">
+                <span className="bkc-cell-label">Nights</span>
+                <span className="bkc-cell-value">{nights} {nights === 1 ? 'night' : 'nights'}</span>
               </div>
             </div>
 
-            <div className="cf-note">
+            <div className="bkc-price">
+              <div className="bkc-row">
+                <span className="bkc-row-label">{formatMoney(roomPrice)} × {nights} {nights === 1 ? 'night' : 'nights'}</span>
+                <span className="bkc-row-value">{formatMoney(subtotal)}</span>
+              </div>
+              <div className="bkc-row">
+                <span className="bkc-row-label">Taxes & fees</span>
+                <span className="bkc-row-value">{formatMoney(taxes)}</span>
+              </div>
+              <div className="bkc-row bkc-row-total">
+                <span className="bkc-row-label">Total Amount</span>
+                <span className="bkc-total-value">{formatMoney(total)}</span>
+              </div>
+            </div>
+
+            <div className="bkc-note">
               A confirmation email has been sent to your registered email address with all the booking details and check-in instructions.
             </div>
 
-            <div className="cf-actions">
-              <Link to="/my-bookings" className="cf-btn cf-btn-primary" onClick={() => setShowConfirm(false)}>View My Bookings</Link>
-              <Link to="/home" className="cf-btn cf-btn-outline" onClick={() => setShowConfirm(false)}>Book Another Hotel</Link>
+            <div className="bkc-actions">
+              <Link to="/my-bookings" className="bkc-btn bkc-btn-primary" onClick={() => setShowConfirm(false)}>View My Bookings</Link>
+              <Link to="/home" className="bkc-btn bkc-btn-outline" onClick={() => setShowConfirm(false)}>Book Another Hotel</Link>
             </div>
           </div>
         </div>
