@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -68,6 +68,7 @@ const imageSchema = z.object({
 
 export default function HotelOwnerDashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
   const [selectedHotelId, setSelectedHotelId] = useState(() => {
     const saved = sessionStorage.getItem('hod_selected_hotel');
@@ -124,11 +125,16 @@ export default function HotelOwnerDashboard() {
     if (hotels.length === 0) return;
     const saved = sessionStorage.getItem('hod_selected_hotel');
     const savedId = saved ? Number(saved) : null;
+    const navigateTo = location.state?.selectHotelId ? Number(location.state.selectHotelId) : null;
     const currentValid = selectedHotelId && hotels.some(h => h.id === selectedHotelId);
     const fallback = (currentValid && selectedHotelId)
+      || (navigateTo && hotels.some(h => h.id === navigateTo) && navigateTo)
       || (savedId && hotels.some(h => h.id === savedId) && savedId)
       || hotels[0].id;
     if (fallback !== selectedHotelId) setSelectedHotelId(fallback);
+    if (navigateTo && navigateTo === fallback) {
+      sessionStorage.setItem('hod_selected_hotel', String(fallback));
+    }
   }, [hotels, selectedHotelId]);
 
   useEffect(() => {

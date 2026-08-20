@@ -52,6 +52,19 @@ class HotelController extends Controller {
         $this->json(["message" => "Hotel created successfully", "hotel" => $hotel], 201);
     }
 
+    public function extractAddress(): void {
+        $this->requireOwner();
+        $input = $this->getJsonInput();
+        $url = trim($input['url'] ?? '');
+
+        if (empty($url)) {
+            $this->json(["message" => "Google Maps URL is required"], 400);
+        }
+
+        require_once __DIR__ . '/../../utils/maps.php';
+        $this->json(extractMapUrl($url));
+    }
+
     public function update(): void {
         $this->requireOwner();
         $input = $this->getJsonInput();

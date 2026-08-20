@@ -16,7 +16,8 @@ class Hotel extends Model {
             'price_range' => $data['price_range'] ?? '',
             'rating' => $data['rating'] ?? 0,
             'amenities' => $data['amenities'] ?? '',
-            'travel_purpose' => $data['travel_purpose'] ?? ''
+            'travel_purpose' => $data['travel_purpose'] ?? '',
+            'map_url' => $data['map_url'] ?? ''
         ]);
     }
 

@@ -32,6 +32,7 @@ CREATE TABLE hotels (
     city            VARCHAR(255)    NULL DEFAULT NULL,
     country         VARCHAR(255)    NULL DEFAULT NULL,
     price_range     VARCHAR(100)    NULL DEFAULT NULL,
+    map_url         VARCHAR(1000)   NULL DEFAULT NULL,
     rating          DECIMAL(2,1)    NOT NULL DEFAULT 0.0,
     amenities       TEXT            NULL,
     travel_purpose  VARCHAR(255)    NULL DEFAULT NULL,

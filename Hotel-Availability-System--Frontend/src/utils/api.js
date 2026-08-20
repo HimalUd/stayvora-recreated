@@ -28,6 +28,7 @@ export const hotelsAPI = {
   uploadImage: (formData) => api.post('/api/hotels/add_image', formData),
   deleteImage: (id) => api.delete('/api/hotels/delete_image', { params: { id } }),
   my: () => api.get('/api/hotels/my'),
+  extractAddress: (url) => api.post('/api/hotels/extract-address', { url }),
   addAmenity: (data) => api.post('/api/hotels/add_amenity', data),
   deleteAmenity: (data) => api.post('/api/hotels/delete_amenity', data),
 };
