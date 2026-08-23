@@ -7,5 +7,6 @@ dist/
 .DS_Store
 
 # Backend runtime
-Hotel-Availability-System-Backend/logs/
-Hotel-Availability-System-Backend/uploads/
+Hotel-Availability-System-Backend/logs/*.DS_Store
+Hotel-Availability-System-Backend/uploads/*.DS_Store
+Hotel-Availability-System-Backend/uploads/hotels/*.DS_Store
