@@ -64,19 +64,36 @@ stayvora-recreated/
 - [MySQL](https://www.mysql.com/) (or XAMPP / MAMP)
 - [Node.js](https://nodejs.org/) >= 14 and npm
 
-### 1. Set up the database
+### Quick start (recommended)
+```bash
+./start.sh
+```
+This creates the `stayvora` database (if missing), starts the backend on port 8090 (with the `index.php` router) and the frontend on port 3000.
+
+> 💡 **One command after cloning:** inside the frontend folder, `npm start` (or `npm run dev`) automatically ensures the database exists, installs dependencies on first run, and starts the backend for you — so a fresh clone works with just:
+> ```bash
+> cd Hotel-Availability-System--Frontend
+> npm start
+> ```
+> Seed login: **admin@stayvora.com / password** (only on a freshly imported database).
+
+### Manual setup
+
+#### 1. Set up the database
 ```bash
 mysql -u root -e "CREATE DATABASE stayvora"
 mysql -u root stayvora < Hotel-Availability-System-Backend/schema.sql
 ```
-> Default DB config lives in `Hotel-Availability-System-Backend/config/database.php` (host: `localhost`, db: `stayvora`). Adjust it if your credentials differ.
+> Default DB config lives in `Hotel-Availability-System-Backend/config/database.php` (host: `localhost`, db: `stayvora`, user: `root`, no password). Make sure MySQL is running first, and adjust `database.php` if your credentials differ.
 
 ### 2. Run the backend (port 8090)
 ```bash
 cd Hotel-Availability-System-Backend
-php -S localhost:8090
+php -S localhost:8090 index.php
 ```
 The API will now be available at `http://localhost:8090/api`. All routes are defined in `index.php` (front-controller pattern).
+
+> ⚠️ **Important:** `index.php` must be passed as the router script. Running plain `php -S localhost:8090` will serve 404s for every `/api/*` and `/uploads/*` request — the frontend then shows "Network Error" on login/register and broken images.
 
 > If the frontend runs on a different host/port than expected, set `REACT_APP_API_URL` before starting the frontend.
 

@@ -16,6 +16,8 @@
     "zod": "^4.4.3"
   },
   "scripts": {
+    "prestart": "bash ../scripts/bootstrap-backend.sh",
+    "predev": "bash ../scripts/bootstrap-backend.sh",
     "dev": "react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
