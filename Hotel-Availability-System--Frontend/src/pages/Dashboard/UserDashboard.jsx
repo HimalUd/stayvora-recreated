@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUserBookings } from '../../hooks/useBookings';
 import { useAuth } from '../../context/AuthContext';
+import { formatLKRFixed } from '../../utils/currency';
 import './Dashboard.css';
 
 function StatusBadge({ status }) {
@@ -76,7 +77,7 @@ export default function UserDashboard() {
                     <td data-label="Room">{b.room_type || b.room?.room_type}</td>
                     <td data-label="Check-in">{b.check_in}</td>
                     <td data-label="Check-out">{b.check_out}</td>
-                    <td data-label="Total">${b.total_price || b.total}</td>
+                    <td data-label="Total">{formatLKRFixed(b.total_price || b.total)}</td>
                     <td data-label="Status"><StatusBadge status={b.status} /></td>
                     <td data-label="Booked On">{b.created_at || b.booking_date}</td>
                   </tr>

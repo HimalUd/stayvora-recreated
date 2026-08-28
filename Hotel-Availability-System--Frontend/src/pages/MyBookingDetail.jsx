@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useUserBookings } from '../hooks/useBookings';
 import { useBookingReview, useHotelReviews, useSubmitReview } from '../hooks/useReviews';
 import StarRating from '../components/StarRating/StarRating';
+import { formatLKRFixed } from '../utils/currency';
 import './MyBookingDetail.css';
 
 const statusLabels = {
@@ -184,7 +185,7 @@ export default function MyBookingDetail() {
             <div className="mbd-stay">
               <span className="mbd-stay-days">{nights} night{nights > 1 ? 's' : ''}</span>
               <span className="mbd-stay-sep">·</span>
-              <span className="mbd-stay-rate">${perNight.toFixed(2)}/night</span>
+              <span className="mbd-stay-rate">{formatLKRFixed(perNight)}/night</span>
             </div>
             <hr className="mbd-divider" />
             <div className="mbd-info-row">
@@ -193,7 +194,7 @@ export default function MyBookingDetail() {
             </div>
             <div className="mbd-info-row">
               <span className="mbd-info-label">Total Price</span>
-              <span className="mbd-price">${totalPrice.toFixed(2)}</span>
+              <span className="mbd-price">{formatLKRFixed(totalPrice)}</span>
             </div>
           </div>
 

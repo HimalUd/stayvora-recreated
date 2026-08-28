@@ -8,6 +8,7 @@ import CalendarPicker, { toDateInput, formatDisplay } from '../components/Calend
 import { EVENT_TYPES } from '../lib/eventTypes';
 import { AMENITIES } from '../lib/amenities';
 import { TRAVEL_PURPOSES } from '../lib/travelPurposes';
+import { formatLKRFixed } from '../utils/currency';
 import './Home.css';
 
 const UPLOAD_HOST = `http://${window.location.hostname || 'localhost'}:8090`;
@@ -99,7 +100,7 @@ function HotelCard({ hotel }) {
           <span className="hotel-reviews">{hotel.reviews} reviews</span>
           <div className="hotel-price">
             <span className="hotel-price-from">From</span>
-            <span className="hotel-price-amount">${hotel.price}<span className="hotel-price-night">/night</span></span>
+            <span className="hotel-price-amount">{formatLKRFixed(hotel.price)}<span className="hotel-price-night">/night</span></span>
           </div>
         </div>
         <Link to={`/hotel/${hotel.id}`} className="hotel-card-btn">View Details</Link>
@@ -140,7 +141,7 @@ function TestimonialCard({ t }) {
 const purposes = TRAVEL_PURPOSES;
 
 const PRICE_MIN = 0;
-const PRICE_MAX = 5000;
+const PRICE_MAX = 100000;
 
 export default function Home() {
   const { user } = useAuth();
@@ -498,7 +499,7 @@ export default function Home() {
                       <td data-label="Room">{b.room_type || b.room}</td>
                       <td data-label="Check-in">{b.check_in || b.checkIn}</td>
                       <td data-label="Check-out">{b.check_out || b.checkOut}</td>
-                      <td data-label="Total">${b.total_price || b.total}</td>
+                      <td data-label="Total">{formatLKRFixed(b.total_price || b.total)}</td>
                       <td data-label="Status">
                         <span className={`db-badge db-badge-${b.status === 'cancelled' ? 'error' : b.status === 'pending' ? 'warning' : 'success'}`}>
                           {b.status}
@@ -711,7 +712,7 @@ export default function Home() {
             <div className="ov-section">
               <div className="ov-section-header">
                 <span>Price Range</span>
-                <span className="ov-price-value">${minPriceVal} - {maxPriceVal >= PRICE_MAX ? `${PRICE_MAX}+` : `$${maxPriceVal}`}</span>
+                <span className="ov-price-value">{formatLKRFixed(minPriceVal)} - {maxPriceVal >= PRICE_MAX ? `${PRICE_MAX.toLocaleString('en-IN')}+` : formatLKRFixed(maxPriceVal)}</span>
               </div>
               <div className="ov-range-wrap">
                 <div className="ov-range-track" />
@@ -727,7 +728,7 @@ export default function Home() {
                   className="ov-range ov-range-min"
                   min={PRICE_MIN}
                   max={PRICE_MAX}
-                  step={10}
+                  step={500}
                   value={minPriceVal}
                   onChange={handleMinSlider}
                   aria-label="Minimum price"
@@ -737,7 +738,7 @@ export default function Home() {
                   className="ov-range ov-range-max"
                   min={PRICE_MIN}
                   max={PRICE_MAX}
-                  step={10}
+                  step={500}
                   value={maxPriceVal}
                   onChange={handleMaxSlider}
                   aria-label="Maximum price"
@@ -749,7 +750,7 @@ export default function Home() {
                   <input
                     type="number"
                     min="0"
-                    placeholder="e.g. 50"
+                    placeholder="e.g. 5000"
                     value={ovMinPrice}
                     onChange={handleMinPriceInput}
                   />
@@ -759,7 +760,7 @@ export default function Home() {
                   <input
                     type="number"
                     min="0"
-                    placeholder="e.g. 500"
+                    placeholder="e.g. 50000"
                     value={ovMaxPrice}
                     onChange={handleMaxPriceInput}
                   />

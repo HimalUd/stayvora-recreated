@@ -10,6 +10,7 @@ import { useEvents, useCreateEvent, useDeleteEvent } from '../hooks/useEvents';
 import { usePlaces, useCreatePlace, useDeletePlace } from '../hooks/usePlaces';
 import { useRooms, useCreateRoom, useDeleteRoom } from '../hooks/useRooms';
 import { useAddAmenity, useDeleteAmenity } from '../hooks/useAmenities';
+import { formatLKRFixed } from '../utils/currency';
 import {
   useNotifications,
   useMarkNotificationRead,
@@ -178,8 +179,8 @@ export default function HotelOwnerDashboard() {
   };
 
   const formatRevenue = (value) => {
-    if (!value) return '$0';
-    return '$' + value.toLocaleString('en-US');
+    if (!value) return 'Rs. 0';
+    return 'Rs. ' + Number(value).toLocaleString('en-IN');
   };
 
   const onEventSubmit = async (data) => {
@@ -499,7 +500,7 @@ export default function HotelOwnerDashboard() {
               {roomErrors.room_type && <span className="hod-error">{roomErrors.room_type.message}</span>}
             </div>
             <div className="hod-mgmt-row">
-              <input className="hod-input" type="number" step="0.01" placeholder="Price per night" {...regRoom('price')} />
+              <input className="hod-input" type="number" step="1" placeholder="Price per night (LKR)" {...regRoom('price')} />
               {roomErrors.price && <span className="hod-error">{roomErrors.price.message}</span>}
             </div>
             <div className="hod-mgmt-row">
@@ -527,7 +528,7 @@ export default function HotelOwnerDashboard() {
           rooms.map(r => (
             <div key={r.id} className="hod-mgmt-item">
               <div className="hod-mgmt-item-info">
-                <strong>{r.room_type}</strong> — <span style={{ color: '#059669', fontWeight: 600 }}>${r.price}</span>/night &middot; {r.capacity} guests
+                <strong>{r.room_type}</strong> — <span style={{ color: '#059669', fontWeight: 600 }}>{formatLKRFixed(r.price)}</span>/night &middot; {r.capacity} guests
                 {r.description && <p className="hod-mgmt-item-desc">{r.description}</p>}
               </div>
               <button className="hod-mgmt-del" onClick={() => deleteRoom.mutate(r.id)} disabled={deleteRoom.isPending}>

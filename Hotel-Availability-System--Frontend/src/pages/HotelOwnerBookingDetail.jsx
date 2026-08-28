@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useOwnerBookings, useConfirmBooking, useCancelBooking } from '../hooks/useBookings';
+import { formatLKRFixed } from '../utils/currency';
 import './HotelOwnerBookingDetail.css';
 
 const statusColors = {
@@ -200,7 +201,7 @@ export default function HotelOwnerBookingDetail() {
             <div className="hobd-stay">
               <span className="hobd-stay-days">{nights} night{nights > 1 ? 's' : ''}</span>
               <span className="hobd-stay-sep">·</span>
-              <span className="hobd-stay-rate">${perNight.toFixed(2)}/night</span>
+              <span className="hobd-stay-rate">{formatLKRFixed(perNight)}/night</span>
             </div>
             <hr className="hobd-divider" />
             <div className="hobd-info-row">
@@ -209,7 +210,7 @@ export default function HotelOwnerBookingDetail() {
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <rect x="4" y="3.33" width="8" height="9.33" rx="1.33" stroke="#00A63E" strokeWidth="1.33"/>
                 </svg>
-                <span className="hobd-price">${booking.total_price || 0}</span>
+                <span className="hobd-price">{formatLKRFixed(booking.total_price || 0)}</span>
               </div>
             </div>
           </div>

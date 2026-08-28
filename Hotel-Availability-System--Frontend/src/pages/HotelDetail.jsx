@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useHotel } from '../hooks/useHotels';
 import { useRooms } from '../hooks/useRooms';
+import { formatLKRFixed } from '../utils/currency';
 import './HotelDetail.css';
 
 const COLORS = ['#155DFC', '#00A63E', '#D08700', '#C10007', '#7C3AED', '#E91E63', '#00BCD4', '#FF5722'];
@@ -302,7 +303,7 @@ export default function HotelDetail() {
                   </div>
                   <div className="hd-room-right">
                     <div className="hd-room-pricing">
-                      <span className="hd-room-current">${room.price}</span>
+                      <span className="hd-room-current">{formatLKRFixed(room.price)}</span>
                       <span className="hd-room-unit">per night</span>
                     </div>
                     <button className="hd-book-btn" onClick={() => navigate(`/booking/${id}?room=${room.id}`)}>
@@ -385,7 +386,7 @@ export default function HotelDetail() {
               <div className="hd-booking-divider" />
                 <div className="hd-booking-price-section">
                   <div className="hd-booking-starting">Starting from</div>
-                  <div className="hd-booking-amount">{minPrice > 0 ? `$${minPrice}` : '-'}</div>
+                  <div className="hd-booking-amount">{minPrice > 0 ? formatLKRFixed(minPrice) : '-'}</div>
                   <div className="hd-booking-unit">per night</div>
                 </div>
               <button

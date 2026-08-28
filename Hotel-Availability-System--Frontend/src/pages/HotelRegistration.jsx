@@ -10,9 +10,9 @@ import { AMENITIES } from '../lib/amenities';
 import './HotelRegistration.css';
 
 const PRICE_RANGES = [
-  { value: 'Budget', label: 'Budget', hint: 'Under $50 / night', icon: '$' },
-  { value: 'Mid-range', label: 'Mid-range', hint: '$50 – $150 / night', icon: '$$' },
-  { value: 'Luxury', label: 'Luxury', hint: 'Over $150 / night', icon: '$$$' },
+  { value: 'Budget', label: 'Budget', hint: 'Under Rs. 15,000 / night', icon: '₹' },
+  { value: 'Mid-range', label: 'Mid-range', hint: 'Rs. 15,000 – Rs. 50,000 / night', icon: '₹₹' },
+  { value: 'Luxury', label: 'Luxury', hint: 'Over Rs. 50,000 / night', icon: '₹₹₹' },
 ];
 
 const hotelAddSchema = z.object({

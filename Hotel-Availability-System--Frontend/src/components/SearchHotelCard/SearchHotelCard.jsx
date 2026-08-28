@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { formatLKRFixed } from '../../utils/currency';
 import './SearchHotelCard.css';
 
 export default function SearchHotelCard({ hotel }) {
@@ -35,7 +36,7 @@ export default function SearchHotelCard({ hotel }) {
           <span className="sr-reviews">{hotel.reviews} reviews</span>
           <div className="sr-price">
             <span className="sr-price-from">From</span>
-            <span className="sr-price-amount">${hotel.price}<span className="sr-price-night">/night</span></span>
+            <span className="sr-price-amount">{formatLKRFixed(hotel.price)}<span className="sr-price-night">/night</span></span>
           </div>
         </div>
         <Link to={`/hotel/${hotel.id}`} className="sr-view-btn">View Details</Link>

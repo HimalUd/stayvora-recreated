@@ -197,7 +197,7 @@ export default function FilterPanel({ onFilter, initialFilters }) {
             id="min_price"
             name="min_price"
             type="number"
-            placeholder="$0"
+            placeholder="0"
             min="0"
             value={filters.min_price}
             onChange={handleChange}
@@ -210,7 +210,7 @@ export default function FilterPanel({ onFilter, initialFilters }) {
             id="max_price"
             name="max_price"
             type="number"
-            placeholder="$1000"
+            placeholder="100000"
             min="0"
             value={filters.max_price}
             onChange={handleChange}

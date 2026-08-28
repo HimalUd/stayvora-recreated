@@ -5,6 +5,7 @@ import { hotelsAPI } from '../utils/api';
 import SearchHotelCard from '../components/SearchHotelCard/SearchHotelCard';
 import FilterPanel from '../components/FilterPanel/FilterPanel';
 import { formatDisplay } from '../components/CalendarPicker/CalendarPicker';
+import { formatLKRFixed } from '../utils/currency';
 import './SearchResults.css';
 
 export default function SearchResults() {
@@ -140,8 +141,8 @@ export default function SearchResults() {
   if (initialFilters.rooms) criteriaChips.push({ key: 'rooms', label: `${initialFilters.rooms} Room${Number(initialFilters.rooms) > 1 ? 's' : ''}` });
 
   const filterChips = [];
-  if (initialFilters.min_price) filterChips.push({ key: 'min_price', label: `Min $${initialFilters.min_price}` });
-  if (initialFilters.max_price) filterChips.push({ key: 'max_price', label: `Max $${initialFilters.max_price}` });
+  if (initialFilters.min_price) filterChips.push({ key: 'min_price', label: `Min ${formatLKRFixed(initialFilters.min_price)}` });
+  if (initialFilters.max_price) filterChips.push({ key: 'max_price', label: `Max ${formatLKRFixed(initialFilters.max_price)}` });
   if (initialFilters.rating) filterChips.push({ key: 'rating', label: `${initialFilters.rating}★ & up` });
   if (initialFilters.travel_purpose) filterChips.push({ key: 'travel_purpose', label: initialFilters.travel_purpose });
   if (initialFilters.event) filterChips.push({ key: 'event', label: initialFilters.event });

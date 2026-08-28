@@ -7,6 +7,7 @@ import { useRooms } from '../hooks/useRooms';
 import { useCreateBooking } from '../hooks/useBookings';
 import { useAuth } from '../context/AuthContext';
 import { bookingSchema } from '../lib/validations';
+import { formatLKR } from '../utils/currency';
 import './Booking.css';
 
 function getNights(checkIn, checkOut) {
@@ -22,7 +23,7 @@ function formatDate(dateStr) {
 }
 
 function formatMoney(n) {
-  return `$${Number(n || 0).toFixed(2)}`;
+  return formatLKR(n);
 }
 
 export default function Booking() {

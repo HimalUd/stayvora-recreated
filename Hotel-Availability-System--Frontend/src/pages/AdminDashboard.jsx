@@ -10,6 +10,7 @@ import {
   useDeleteReview,
 } from '../hooks/useAdmin';
 import logoLight from '../assets/logos/logo-light.png';
+import { formatLKRFixed } from '../utils/currency';
 import './AdminDashboard.css';
 
 export default function AdminDashboard() {
@@ -408,7 +409,7 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                         <div className="ad-booking-right">
-                          <div className="ad-booking-amount">${b.total_price || 0}</div>
+                          <div className="ad-booking-amount">{formatLKRFixed(b.total_price || 0)}</div>
                           <div className={`ad-booking-status ad-booking-status-${b.status}`}>{b.status}</div>
                           <div className="ad-booking-date">
                             {new Date(b.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
