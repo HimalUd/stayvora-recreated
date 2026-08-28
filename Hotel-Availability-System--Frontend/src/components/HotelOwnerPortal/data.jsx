@@ -14,7 +14,7 @@ export const features = [
   {
     icon: GlobeIcon,
     bg: '#DBEAFE',
-    title: 'Local Reach, Lanka-Wide',
+    title: 'Local Reach, Islandwide',
     desc: 'Get discovered by travelers searching for stays in your area — from Colombo business trips to Ella hill escapes and Mirissa beach holidays.',
   },
   {
@@ -86,16 +86,16 @@ export const steps = [
 ];
 
 export const stats = [
-  { value: '500+', label: 'Partner Hotels' },
-  { value: '50K+', label: 'Bookings Monthly' },
-  { value: '$2M+', label: 'Revenue Generated' },
+  { value: '50+', label: 'Partner Hotels' },
+  { value: '50+', label: 'Bookings Monthly' },
+  { value: '2M+ LKR', label: 'Revenue Generated' },
   { value: '4.9★', label: 'Average Rating' },
 ];
 
 export const heroStats = [
   {
     label: 'Monthly Revenue',
-    value: '$45,280',
+    value: '100000+ LKR',
     valueClass: 'hop-stat-value-blue',
     boxClass: 'hop-stat-purple',
     icon: StatRevenueIcon,

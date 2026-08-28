@@ -809,7 +809,7 @@ export default function HotelOwnerDashboard() {
       <div className="hod-content">
         <div className="hod-welcome-header">
           <div>
-            <span className="hod-eyebrow">Owner Overview</span>
+            
             <h1 className="hod-welcome">Welcome back, {(user?.name || 'Owner').split(' ')[0]}!</h1>
             <p className="hod-sub">
               {selectedHotel

@@ -331,9 +331,9 @@ export default function Home() {
         <div className="home-hero-bg" style={{ backgroundImage: `url(${UPLOAD_HOST}/uploads/landing-page-image.jpg)` }} />
         <div className="home-hero-overlay" />
         <div className="home-hero-content">
-          <span className="home-hero-eyebrow">Smart Hotel Discovery</span>
+          
           <h1 className="home-hero-title">Discover <span className="home-hero-title-accent">Luxury Stays</span> Designed<br />Around Your Journey</h1>
-          <p className="home-hero-subtitle">Smart hotel discovery platform for travelers, families, business trips, honeymoon stays, and unforgettable experiences.</p>
+          <p className="home-hero-subtitle">Smart hotel discovery platform for travelers, based on their purpos, events, prices, etc..</p>
         </div>
 
         {/* ===== SEARCH BAR ===== */}
@@ -460,7 +460,7 @@ export default function Home() {
           <Reveal>
             <div className="dashboard-header-row">
               <div>
-                <span className="home-eyebrow">Your Stays</span>
+                
                 <h2 className="dashboard-title">My Bookings</h2>
                 <p className="dashboard-subtitle">Welcome back, {user?.name || 'Traveler'}</p>
               </div>
@@ -521,7 +521,7 @@ export default function Home() {
           <Reveal>
             <div className="hotels-header">
               <div>
-                <span className="home-eyebrow">Curated For You</span>
+                
                 <h2 className="hotels-title">Curated Luxury Hotels</h2>
                 <p className="hotels-subtitle">{displayHotels.length} premium {displayHotels.length === 1 ? 'property' : 'properties'} match your preferences</p>
               </div>
@@ -547,7 +547,7 @@ export default function Home() {
       <section className="home-destinations-section">
         <div className="home-section-container">
           <Reveal>
-            <span className="home-eyebrow home-eyebrow-center">Trending Destinations</span>
+            
             <h2 className="dest-title">Explore Trending Destinations</h2>
             <p className="dest-subtitle">Handpicked locations for your next adventure</p>
           </Reveal>
@@ -565,7 +565,7 @@ export default function Home() {
       <section className="home-testimonials-section">
         <div className="home-section-container">
           <Reveal>
-            <span className="home-eyebrow home-eyebrow-center">Traveler Stories</span>
+            
             <h2 className="testimonials-title">Loved by Travelers Islandwide</h2>
           </Reveal>
           <div className="testimonials-grid">
@@ -583,7 +583,7 @@ export default function Home() {
         <div className={`ov-modal ${showOverlay ? 'ov-modal-open' : ''}`} onClick={(e) => e.stopPropagation()}>
           <div className="ov-header">
             <div className="ov-header-left">
-              <span className="ov-eyebrow">Smart Filters</span>
+              
               <h3 className="ov-title">Additional Filters</h3>
               <p className="ov-subtitle">Refine your stay with smart filters</p>
             </div>

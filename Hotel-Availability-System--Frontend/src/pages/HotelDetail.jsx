@@ -227,7 +227,7 @@ export default function HotelDetail() {
             </div>
             <div className="hd-section">
               <div className="hd-section-head">
-                <span className="hd-eyebrow">About The Hotel</span>
+                
                 <h2 className="hd-section-title">About This Hotel</h2>
               </div>
               <p className="hd-description">{hotel.description}</p>

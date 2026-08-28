@@ -14,7 +14,7 @@ export default function PortalHero() {
       <div className="hop-hero-body">
         <div className="hop-hero-text">
           <div className="hop-badge">For Hotel Owners</div>
-          <h1 className="hop-hero-title">Reach Thousands of <span className="hop-hero-accent">Travelers Worldwide</span></h1>
+          <h1 className="hop-hero-title">Reach Hundreds of <span className="hop-hero-accent">Travelers Islandwide</span></h1>
           <p className="hop-hero-desc">
             Join our platform and transform your hotel business. Get instant access to a global
             network of travelers, manage bookings effortlessly, and grow your revenue.

@@ -246,7 +246,7 @@ export default function AdminDashboard() {
           <>
             <div className="ad-overview-head">
               <div>
-                <div className="ad-eyebrow">Admin Console</div>
+                
                 <h1 className="ad-page-title">Welcome back, {(user?.name || 'Administrator').split(' ')[0]}!</h1>
                 <p className="ad-page-date">{today} · overseeing all StayVora properties</p>
               </div>
