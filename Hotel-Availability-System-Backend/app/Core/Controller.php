@@ -34,6 +34,14 @@ class Controller {
         if (!$this->isLoggedIn()) {
             $this->error("Unauthorized. Please login first.", 401);
         }
+
+        require_once __DIR__ . '/../Models/User.php';
+        $userModel = new User();
+        $user = $userModel->findById((int)$_SESSION['user_id']);
+        if (!$user || (isset($user['is_active']) && !(int)$user['is_active'])) {
+            session_destroy();
+            $this->error("Your account has been deactivated. Please login.", 401);
+        }
     }
 
     protected function isOwner(): bool {

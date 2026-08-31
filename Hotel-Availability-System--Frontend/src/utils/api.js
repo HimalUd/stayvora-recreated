@@ -76,8 +76,11 @@ export const adminAPI = {
   stats: () => api.get('/api/admin/stats'),
   bookings: () => api.get('/api/admin/bookings'),
   reviews: () => api.get('/api/admin/reviews'),
+  users: () => api.get('/api/admin/users'),
+  userDetail: (id) => api.get('/api/admin/users/detail', { params: { id } }),
   deleteHotel: (id) => api.delete('/api/admin/delete_hotel', { params: { id } }),
   deleteReview: (id) => api.delete('/api/admin/delete-review', { params: { id } }),
+  deleteUser: (id) => api.delete('/api/admin/delete-user', { params: { id } }),
 };
 
 export const notificationsAPI = {

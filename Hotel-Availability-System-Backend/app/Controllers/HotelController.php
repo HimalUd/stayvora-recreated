@@ -82,7 +82,7 @@ class HotelController extends Controller {
             $this->json(["message" => "You can only update your own hotels"], 403);
         }
 
-        $fields = ['name', 'description', 'location', 'address', 'price_range', 'amenities', 'travel_purpose', 'status'];
+        $fields = ['name', 'description', 'location', 'address', 'city', 'country', 'price_range', 'amenities', 'travel_purpose', 'status', 'map_url'];
         $updates = [];
         foreach ($fields as $field) {
             if (isset($input[$field])) {

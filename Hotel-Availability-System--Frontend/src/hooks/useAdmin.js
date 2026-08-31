@@ -29,6 +29,32 @@ export function useAdminReviews() {
   });
 }
 
+export function useAdminUsers() {
+  return useQuery({
+    queryKey: ['admin', 'users'],
+    queryFn: () => adminAPI.users().then(r => r.data.users || []),
+  });
+}
+
+export function useAdminUserDetail() {
+  return useMutation({
+    mutationFn: (id) => adminAPI.userDetail(id).then(r => r.data),
+  });
+}
+
+export function useDeleteUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => adminAPI.deleteUser(id).then(r => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'bookings'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'reviews'] });
+    },
+  });
+}
+
 export function useDeleteHotel() {
   const queryClient = useQueryClient();
   return useMutation({

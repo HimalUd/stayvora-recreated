@@ -32,6 +32,17 @@ export function useOwnerHotels() {
   });
 }
 
+export function useUpdateHotel() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data) => hotelsAPI.update(data).then(r => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['hotels', 'owner'] });
+      queryClient.invalidateQueries({ queryKey: ['hotel'] });
+    },
+  });
+}
+
 export function useAddHotelImage() {
   const queryClient = useQueryClient();
   return useMutation({

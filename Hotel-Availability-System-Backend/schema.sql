@@ -12,6 +12,7 @@ CREATE TABLE users (
     phone           VARCHAR(50)     NULL DEFAULT NULL,
     role            ENUM('traveler', 'owner', 'admin') NOT NULL DEFAULT 'traveler',
     email_verified  TINYINT(1)      NOT NULL DEFAULT 0,
+    is_active       TINYINT(1)      NOT NULL DEFAULT 1,
     verification_code VARCHAR(6)    NULL DEFAULT NULL,
     created_at      TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at      TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

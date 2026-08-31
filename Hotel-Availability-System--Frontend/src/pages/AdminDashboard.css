@@ -1400,6 +1400,249 @@
   color: #FF6467;
 }
 
+/* ===== USERS TAB ===== */
+.ad-user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.ad-user-row-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #0F172B;
+  border: 1px solid #1D293D;
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background 0.15s, outline-color 0.15s;
+}
+
+.ad-user-row-card:hover {
+  background: #111C33;
+  outline-color: #314158;
+}
+
+.ad-user-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ad-user-info-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ad-user-status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.ad-user-status-inactive {
+  color: #FF6467;
+  background: rgba(251, 44, 54, 0.12);
+}
+
+.ad-rev-badge-inactive {
+  color: #FF6467;
+  background: rgba(251, 44, 54, 0.12);
+}
+
+.ad-user-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ad-user-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #CAD5E2;
+  font-size: 12px;
+  font-weight: 500;
+  background: #111C33;
+  border: 1px solid #1D293D;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.ad-user-row-chevron {
+  flex-shrink: 0;
+  color: #90A1B9;
+  display: flex;
+  align-items: center;
+}
+
+/* User detail modal */
+.ad-card-modal {
+  max-width: 560px;
+  width: 100%;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.ad-card-modal-scroll {
+  overflow-y: auto;
+  min-height: 0;
+  flex: 1 1 auto;
+  padding: 24px;
+}
+
+.ad-card-modal-footer {
+  flex: 0 0 auto;
+  padding: 16px 24px;
+  border-top: 1px solid #1D293D;
+}
+
+.ad-user-detail-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.ad-user-detail-stat {
+  background: #0F172B;
+  border: 1px solid #1D293D;
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+}
+
+.ad-user-detail-stat-value {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.ad-user-detail-stat-label {
+  color: #90A1B9;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.ad-user-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #1D293D;
+}
+
+.ad-user-detail-row-label {
+  color: #90A1B9;
+  font-size: 13px;
+}
+
+.ad-user-detail-row-value {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.ad-user-detail-section {
+  margin-top: 20px;
+}
+
+.ad-user-detail-section-label {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.ad-user-detail-subs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.ad-user-detail-sub {
+  background: #0F172B;
+  border: 1px solid #1D293D;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.ad-user-detail-sub-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ad-user-detail-sub-title {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ad-user-detail-sub-status {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.ad-user-detail-sub-status-pending {
+  color: #fff;
+  background: rgba(245, 158, 11, 0.15);
+}
+
+.ad-user-detail-sub-status-confirmed {
+  color: #fff;
+  background: rgba(25, 118, 210, 0.18);
+}
+
+.ad-user-detail-sub-status-cancelled {
+  color: #fff;
+  background: rgba(211, 47, 47, 0.18);
+}
+
+.ad-user-detail-sub-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #FFB900;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ad-user-detail-sub-meta {
+  color: #90A1B9;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.ad-user-detail-sub-comment {
+  color: #CAD5E2;
+  font-size: 13px;
+  line-height: 20px;
+  margin-top: 8px;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .ad-stats {

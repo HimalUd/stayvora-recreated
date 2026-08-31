@@ -125,6 +125,10 @@ class AuthController extends Controller {
             $this->json(["message" => "Invalid email or password"], 401);
         }
 
+        if (isset($user['is_active']) && !(int)$user['is_active']) {
+            $this->json(["message" => "Your account has been deactivated. Please contact support."], 403);
+        }
+
         session_regenerate_id(true);
 
         $_SESSION['user_id'] = $user['id'];
@@ -159,6 +163,11 @@ class AuthController extends Controller {
         if (!$user) {
             session_destroy();
             $this->json(["message" => "User not found"], 401);
+        }
+
+        if (isset($user['is_active']) && !(int)$user['is_active']) {
+            session_destroy();
+            $this->json(["message" => "Your account has been deactivated"], 401);
         }
 
         unset($user['password_hash']);

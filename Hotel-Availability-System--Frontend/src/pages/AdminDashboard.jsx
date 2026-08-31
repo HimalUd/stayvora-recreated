@@ -6,8 +6,11 @@ import {
   useAdminStats,
   useAdminBookings,
   useAdminReviews,
+  useAdminUsers,
+  useAdminUserDetail,
   useDeleteHotel,
   useDeleteReview,
+  useDeleteUser,
 } from '../hooks/useAdmin';
 import logoLight from '../assets/logos/logo-light.png';
 import { formatLKRFixed } from '../utils/currency';
@@ -26,19 +29,20 @@ export default function AdminDashboard() {
   const [reviewSort, setReviewSort] = useState('newest');
   const [reviewPage, setReviewPage] = useState(1);
   const [deleteConfirmReview, setDeleteConfirmReview] = useState(null);
+  const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [deleteConfirmUser, setDeleteConfirmUser] = useState(null);
   const PAGE_SIZE = 8;
-  useEffect(() => {
-    if (!user || user.role !== 'admin') {
-      navigate('/login');
-    }
-  }, [user, navigate]);
 
   const { data: registeredHotels = [], isLoading: hotelsLoading } = useAdminHotels();
   const { data: stats = {} } = useAdminStats();
   const { data: recentBookings = [], isLoading: bookingsLoading } = useAdminBookings();
   const { data: allReviews = [], isLoading: reviewsLoading } = useAdminReviews();
+  const { data: allUsers = [], isLoading: usersLoading } = useAdminUsers();
+  const userDetailMutation = useAdminUserDetail();
   const deleteHotel = useDeleteHotel();
   const deleteReview = useDeleteReview();
+  const deleteUser = useDeleteUser();
 
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
@@ -50,9 +54,10 @@ export default function AdminDashboard() {
       totalHotels: stats.total_hotels ?? registeredHotels.length,
       totalBookings: stats.total_bookings ?? 0,
       totalReviews: stats.total_reviews ?? 0,
+      totalUsers: stats.total_users ?? allUsers.length,
       flagged,
     };
-  }, [stats, registeredHotels]);
+  }, [stats, registeredHotels, allUsers]);
 
   const handleSignOut = () => {
     logout();
@@ -118,6 +123,16 @@ export default function AdminDashboard() {
     setReviewPage(1);
   }, [reviewFilter, reviewSearchQuery, reviewSort]);
 
+  const filteredUsers = useMemo(() => {
+    if (!userSearchQuery.trim()) return allUsers;
+    const q = userSearchQuery.toLowerCase();
+    return allUsers.filter(u =>
+      (u.name || '').toLowerCase().includes(q) ||
+      (u.email || '').toLowerCase().includes(q) ||
+      (u.phone || '').toLowerCase().includes(q)
+    );
+  }, [allUsers, userSearchQuery]);
+
   const paginatedReviews = useMemo(() => {
     const start = (reviewPage - 1) * PAGE_SIZE;
     return filteredReviews.slice(start, start + PAGE_SIZE);
@@ -165,7 +180,7 @@ export default function AdminDashboard() {
     return [];
   };
 
-  if (!user || user.role !== 'admin') return null;
+  if (!user) return null;
 
   return (
     <div className="ad-page">
@@ -215,6 +230,23 @@ export default function AdminDashboard() {
             </svg>
             <span>Reviews</span>
             {activeTab === 'reviews' && (
+              <svg className="ad-nav-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="5.25" y="3.50" width="7" height="3.50" rx="0.58" stroke="#020618" strokeWidth="1.17"/>
+              </svg>
+            )}
+          </div>
+          <div
+            className={`ad-nav-item ${activeTab === 'users' ? 'ad-nav-active' : ''}`}
+            onClick={() => setActiveTab('users')}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="5.5" cy="5.5" r="2.83" stroke={activeTab === 'users' ? '#020618' : '#90A1B9'} strokeWidth="1.33"/>
+              <circle cx="12.5" cy="5.5" r="1.83" stroke={activeTab === 'users' ? '#020618' : '#90A1B9'} strokeWidth="1.33"/>
+              <path d="M1.33 13.33C1.33 10.39 3.06 8.33 5.5 8.33C7.94 8.33 9.67 10.39 9.67 13.33" stroke={activeTab === 'users' ? '#020618' : '#90A1B9'} strokeWidth="1.33" strokeLinecap="round"/>
+              <path d="M10.33 8.67C12.5 9 14 10.72 14 13.33" stroke={activeTab === 'users' ? '#020618' : '#90A1B9'} strokeWidth="1.33" strokeLinecap="round"/>
+            </svg>
+            <span>Users</span>
+            {activeTab === 'users' && (
               <svg className="ad-nav-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <rect x="5.25" y="3.50" width="7" height="3.50" rx="0.58" stroke="#020618" strokeWidth="1.17"/>
               </svg>
@@ -292,6 +324,19 @@ export default function AdminDashboard() {
                 <div className="ad-stat-number">{statsView.totalReviews}</div>
                 <div className="ad-stat-label">Total Reviews</div>
                 <div className="ad-stat-sub">across all properties · click to view</div>
+              </div>
+              <div className="ad-stat-card ad-stat-hover" onClick={() => setActiveTab('users')}>
+                <div className="ad-stat-icon" style={{ background: 'rgba(81, 162, 255, 0.10)' }}>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <circle cx="7" cy="7" r="3.33" stroke="#51A2FF" strokeWidth="1.67"/>
+                    <circle cx="15" cy="7" r="2.17" stroke="#51A2FF" strokeWidth="1.67"/>
+                    <path d="M1.67 16.67C1.67 12.72 3.83 10 7 10C10.17 10 12.33 12.72 12.33 16.67" stroke="#51A2FF" strokeWidth="1.67" strokeLinecap="round"/>
+                    <path d="M13.33 10.83C15.83 11.17 17.5 13.33 17.5 16.67" stroke="#51A2FF" strokeWidth="1.67" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                <div className="ad-stat-number">{statsView.totalUsers}</div>
+                <div className="ad-stat-label">Total Users</div>
+                <div className="ad-stat-sub">registered traveler accounts · click to view</div>
               </div>
               <div
                 className="ad-stat-card ad-stat-hover"
@@ -839,6 +884,86 @@ export default function AdminDashboard() {
           </>
         )}
 
+        {activeTab === 'users' && (
+          <>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <h1 className="ad-page-title">Users</h1>
+                <p className="ad-page-date">
+                  {allUsers.length} registered traveler {allUsers.length === 1 ? 'account' : 'accounts'}
+                </p>
+              </div>
+            </div>
+
+            {/* TOOLBAR */}
+            <div className="ad-rev-toolbar" style={{ marginTop: 16 }}>
+              <div className="ad-rev-search">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <rect x="2" y="2" width="10.67" height="10.67" rx="1.33" stroke="#62748E" strokeWidth="1.33"/>
+                  <rect x="11.13" y="11.13" width="2.87" height="2.87" rx="1.33" stroke="#62748E" strokeWidth="1.33"/>
+                </svg>
+                <input
+                  className="ad-rev-search-input"
+                  placeholder="Search by name, email, or phone..."
+                  value={userSearchQuery}
+                  onChange={e => setUserSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {usersLoading ? (
+              <p className="ad-empty-title" style={{ paddingTop: 48, textAlign: 'center', width: '100%' }}>Loading users...</p>
+            ) : filteredUsers.length === 0 ? (
+              <p className="ad-empty-title" style={{ paddingTop: 48 }}>
+                {userSearchQuery ? 'No users match your search.' : 'No traveler users yet. Registered users will appear here.'}
+              </p>
+            ) : (
+              <div className="ad-user-list">
+                {filteredUsers.map(u => (
+                  <div
+                    key={u.id}
+                    className="ad-user-row-card"
+                    onClick={() => { setSelectedUser(u); userDetailMutation.reset(); userDetailMutation.mutate(u.id); }}
+                  >
+                    <div className="ad-user-avatar" style={{ width: 40, height: 40, fontSize: 15, borderRadius: 12, background: '#314158' }}>
+                      {(u.name || 'U').charAt(0).toUpperCase()}
+                    </div>
+                    <div className="ad-user-info">
+                      <div className="ad-user-info-name-row">
+                        <div className="ad-hotel-name">{u.name}</div>
+                        {u.is_active === 0 && (
+                          <span className="ad-user-status-badge ad-user-status-inactive">Inactive</span>
+                        )}
+                      </div>
+                      <div className="ad-hotel-location">{u.email}</div>
+                    </div>
+                    <div className="ad-user-stats">
+                      <span className="ad-user-stat-pill">
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                          <rect x="1.33" y="5.83" width="13.33" height="6.67" rx="1.33" stroke="#51A2FF" strokeWidth="1.33"/>
+                          <rect x="11.33" y="5.83" width="4" height="4" rx="1.33" stroke="#51A2FF" strokeWidth="1.33"/>
+                        </svg>
+                        {u.bookings_count || 0} bookings
+                      </span>
+                      <span className="ad-user-stat-pill">
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                          <rect x="1.33" y="1.33" width="13.33" height="12.71" rx="1.33" stroke="#FFB900" strokeWidth="1.33"/>
+                        </svg>
+                        {u.reviews_count || 0} reviews
+                      </span>
+                    </div>
+                    <div className="ad-user-row-chevron">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M5 3l4 4-4 4" stroke="#90A1B9" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
         {/* REVIEW DETAIL MODAL */}
         {selectedReview && (
           <div className="ad-modal-overlay" onClick={() => setSelectedReview(null)}>
@@ -1075,6 +1200,198 @@ export default function AdminDashboard() {
                       <rect x="5.33" y="1.33" width="5.33" height="2.67" rx="1.33" stroke="#FF6467" strokeWidth="1.33"/>
                     </svg>
                     Remove Hotel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* USER DETAIL MODAL */}
+        {selectedUser && (
+          <div className="ad-modal-overlay" onClick={() => setSelectedUser(null)}>
+            <div className="ad-modal ad-card-modal" onClick={e => e.stopPropagation()}>
+              <div className="ad-modal-header">
+                <div className="ad-modal-title">User Details</div>
+                <div className="ad-modal-close" onClick={() => setSelectedUser(null)}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <rect x="4" y="4" width="12.80" height="1.60" rx="0.80" fill="#90A1B9" transform="rotate(45 4 4)"/>
+                    <rect x="4" y="12.80" width="12.80" height="1.60" rx="0.80" fill="#90A1B9" transform="rotate(-45 4 12.80)"/>
+                  </svg>
+                </div>
+              </div>
+              <div className="ad-card-modal-scroll">
+                <div className="ad-modal-user">
+                  <div className="ad-modal-avatar">{(selectedUser.name || 'U').charAt(0).toUpperCase()}</div>
+                  <div>
+                    <div className="ad-modal-name">{selectedUser.name}</div>
+                    <div className="ad-modal-email">{selectedUser.email}</div>
+                  </div>
+                </div>
+
+                {userDetailMutation.isPending && (
+                  <p className="ad-empty-title" style={{ paddingTop: 24, textAlign: 'center' }}>Loading user details...</p>
+                )}
+
+                {userDetailMutation.isSuccess && userDetailMutation.data && (
+                  <>
+                    <div className="ad-user-detail-stats">
+                      <div className="ad-user-detail-stat">
+                        <div className="ad-user-detail-stat-value">{userDetailMutation.data.bookings_count ?? 0}</div>
+                        <div className="ad-user-detail-stat-label">Bookings</div>
+                      </div>
+                      <div className="ad-user-detail-stat">
+                        <div className="ad-user-detail-stat-value">{userDetailMutation.data.reviews_count ?? 0}</div>
+                        <div className="ad-user-detail-stat-label">Reviews</div>
+                      </div>
+                      <div className="ad-user-detail-stat">
+                        <div className="ad-user-detail-stat-value">
+                          <span style={{ textTransform: 'capitalize' }}>{selectedUser.role || 'traveler'}</span>
+                        </div>
+                        <div className="ad-user-detail-stat-label">Role</div>
+                      </div>
+                    </div>
+
+                    {selectedUser.phone && (
+                      <div className="ad-user-detail-row">
+                        <span className="ad-user-detail-row-label">Phone</span>
+                        <span className="ad-user-detail-row-value">{selectedUser.phone}</span>
+                      </div>
+                    )}
+                    <div className="ad-user-detail-row">
+                      <span className="ad-user-detail-row-label">Joined</span>
+                      <span className="ad-user-detail-row-value">
+                        {new Date(selectedUser.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      </span>
+                    </div>
+                    <div className="ad-user-detail-row">
+                      <span className="ad-user-detail-row-label">Account status</span>
+                      <span className="ad-user-detail-row-value">
+                        <span className={`ad-rev-badge-verified ${selectedUser.is_active === 0 ? 'ad-rev-badge-inactive' : ''}`} style={{ padding: '2px 8px' }}>
+                          <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                            <rect x="1.5" y="1.5" width="9" height="9" rx="2" stroke={selectedUser.is_active === 0 ? '#FF6467' : '#00D492'} strokeWidth="1.1"/>
+                            <path d="M3.5 6L5.2 7.7L8.5 4.5" stroke={selectedUser.is_active === 0 ? '#FF6467' : '#00D492'} strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          {selectedUser.is_active === 0 ? 'Inactive' : 'Active'}
+                        </span>
+                      </span>
+                    </div>
+                    <div className="ad-user-detail-row">
+                      <span className="ad-user-detail-row-label">Email verified</span>
+                      <span className="ad-user-detail-row-value">
+                        <span className={`ad-rev-badge-verified`} style={{ padding: '2px 8px' }}>
+                          <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                            <rect x="1.5" y="1.5" width="9" height="9" rx="2" stroke={selectedUser.email_verified ? '#00D492' : '#FF6467'} strokeWidth="1.1"/>
+                            <path d="M3.5 6L5.2 7.7L8.5 4.5" stroke={selectedUser.email_verified ? '#00D492' : '#FF6467'} strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          {selectedUser.email_verified ? 'Verified' : 'Not verified'}
+                        </span>
+                      </span>
+                    </div>
+
+                    {userDetailMutation.data.bookings?.length > 0 && (
+                      <div className="ad-user-detail-section">
+                        <div className="ad-user-detail-section-label">Bookings</div>
+                        <div className="ad-user-detail-subs">
+                          {userDetailMutation.data.bookings.map(b => (
+                            <div key={b.id} className="ad-user-detail-sub">
+                              <div className="ad-user-detail-sub-head">
+                                <span className="ad-user-detail-sub-title">{b.hotel_name}</span>
+                                <span className={`ad-user-detail-sub-status ad-user-detail-sub-status-${b.status}`}>
+                                  {b.status}
+                                </span>
+                              </div>
+                              <div className="ad-user-detail-sub-meta">
+                                {b.room_type} · {b.check_in} → {b.check_out} · {b.guests} guest(s)
+                              </div>
+                              <div className="ad-user-detail-sub-meta">
+                                {b.booking_code} · {formatLKRFixed(b.total_price)}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {userDetailMutation.data.reviews?.length > 0 && (
+                      <div className="ad-user-detail-section">
+                        <div className="ad-user-detail-section-label">Reviews</div>
+                        <div className="ad-user-detail-subs">
+                          {userDetailMutation.data.reviews.map(r => (
+                            <div key={r.id} className="ad-user-detail-sub">
+                              <div className="ad-user-detail-sub-head">
+                                <span className="ad-user-detail-sub-title">{r.hotel_name}</span>
+                                <span className="ad-user-detail-sub-stars">
+                                  {r.rating} <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><rect x="1.17" y="1.17" width="11.67" height="11.13" rx="1.17" fill="#FFB900" stroke="#FFB900" strokeWidth="1.17"/></svg>
+                                </span>
+                              </div>
+                              {r.comment && <div className="ad-user-detail-sub-comment">{r.comment}</div>}
+                              <div className="ad-user-detail-sub-meta">
+                                {new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+
+              <div className="ad-card-modal-footer">
+                <div className="ad-modal-actions" style={{ margin: 0 }}>
+                  <button className="ad-modal-btn ad-modal-btn-close" onClick={() => setSelectedUser(null)}>
+                    Close
+                  </button>
+                  <button
+                    className="ad-modal-btn ad-modal-btn-delete"
+                    disabled={deleteUser.isPending || selectedUser.is_active === 0}
+                    onClick={() => { setDeleteConfirmUser(selectedUser); }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <rect x="3.33" y="4" width="9.33" height="10.67" rx="1.33" stroke="#FF6467" strokeWidth="1.33"/>
+                      <rect x="5.33" y="1.33" width="5.33" height="2.67" rx="1.33" stroke="#FF6467" strokeWidth="1.33"/>
+                    </svg>
+                    {selectedUser.is_active === 0 ? 'Deactivated' : 'Deactivate User'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* DELETE USER CONFIRM MODAL */}
+        {deleteConfirmUser && (
+          <div className="ad-modal-overlay" onClick={() => setDeleteConfirmUser(null)}>
+            <div className="ad-modal" style={{ width: 440 }} onClick={e => e.stopPropagation()}>
+              <div className="ad-modal-body" style={{ textAlign: 'center', paddingTop: 32 }}>
+                <div className="ad-delete-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 6H21" stroke="#FF6467" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M8 6V4C8 3 9 2 10 2H14C15 2 16 3 16 4V6" stroke="#FF6467" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M19 6V20C19 21 18 22 17 22H7C6 22 5 21 5 20V6" stroke="#FF6467" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M10 11V17M14 11V17" stroke="#FF6467" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                <div className="ad-modal-title" style={{ fontSize: 18, paddingTop: 16 }}>Deactivate User</div>
+                <p className="ad-delete-text">
+                  <strong>{deleteConfirmUser.name}</strong> will be deactivated and will no longer be able
+                  to log in to the system. Their data will be preserved.
+                </p>
+                <div className="ad-modal-actions">
+                  <button className="ad-modal-btn ad-modal-btn-close" onClick={() => setDeleteConfirmUser(null)}>
+                    Cancel
+                  </button>
+                  <button
+                    className="ad-modal-btn ad-modal-btn-delete"
+                    disabled={deleteUser.isPending}
+                    onClick={() => {
+                      deleteUser.mutate(deleteConfirmUser.id);
+                      setSelectedUser(null);
+                      setDeleteConfirmUser(null);
+                    }}
+                  >
+                    {deleteUser.isPending ? 'Deactivating...' : 'Deactivate User'}
                   </button>
                 </div>
               </div>

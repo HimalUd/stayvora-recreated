@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '../context/AuthContext';
 import { useOwnerBookings } from '../hooks/useBookings';
-import { useOwnerHotels, useAddHotelImage, useDeleteHotelImage } from '../hooks/useHotels';
+import { useOwnerHotels, useAddHotelImage, useDeleteHotelImage, useUpdateHotel } from '../hooks/useHotels';
 import { useEvents, useCreateEvent, useDeleteEvent } from '../hooks/useEvents';
 import { usePlaces, useCreatePlace, useDeletePlace } from '../hooks/usePlaces';
 import { useRooms, useCreateRoom, useDeleteRoom } from '../hooks/useRooms';
@@ -19,6 +19,7 @@ import {
 import { placesAPI } from '../utils/api';
 import { EVENT_TYPES } from '../lib/eventTypes';
 import { AMENITIES } from '../lib/amenities';
+import { TRAVEL_PURPOSES } from '../lib/travelPurposes';
 import CalendarPicker, { toDateInput, formatDisplay } from '../components/CalendarPicker/CalendarPicker';
 import badgeLight from '../assets/logos/badge-light.png';
 import './HotelOwnerDashboard.css';
@@ -40,6 +41,8 @@ const statusTextColors = {
   confirmed: 'white',
   cancelled: 'white',
 };
+
+const PRICE_RANGES = ['Budget', 'Mid-range', 'Luxury'];
 
 const eventSchema = z.object({
   name: z.string().min(1, 'Select an event type'),
@@ -65,6 +68,15 @@ const roomSchema = z.object({
 
 const imageSchema = z.object({
   image_url: z.string().optional(),
+});
+
+const hotelEditSchema = z.object({
+  name: z.string().min(2, 'Hotel name is required'),
+  description: z.string().min(1, 'Description is required'),
+  address: z.string().min(1, 'Address is required'),
+  city: z.string().min(1, 'City is required'),
+  country: z.string().min(1, 'Country is required'),
+  price_range: z.string().min(1, 'Select a price range'),
 });
 
 export default function HotelOwnerDashboard() {
@@ -166,6 +178,15 @@ export default function HotelOwnerDashboard() {
   const { register: regRoom, handleSubmit: handleRoomSubmit, formState: { errors: roomErrors }, reset: resetRoom } = useForm({
     resolver: zodResolver(roomSchema),
   });
+  const updateHotel = useUpdateHotel();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editError, setEditError] = useState('');
+  const [editSuccess, setEditSuccess] = useState('');
+  const [editTravelPurposes, setEditTravelPurposes] = useState([]);
+  const [editAmenities, setEditAmenities] = useState([]);
+  const { register: regEdit, handleSubmit: handleEditSubmit, formState: { errors: editErrors }, reset: resetEdit, setValue: setEditValue, watch: watchEdit } = useForm({
+    resolver: zodResolver(hotelEditSchema),
+  });
 
   const stats = {
     total: bookings.length,
@@ -248,6 +269,54 @@ export default function HotelOwnerDashboard() {
   const onRoomSubmit = async (data) => {
     await createRoom.mutateAsync({ ...data, hotel_id: selectedHotelId, price: Number(data.price), capacity: Number(data.capacity) });
     resetRoom();
+  };
+
+  const openEditModal = () => {
+    if (!selectedHotel) return;
+    setEditError('');
+    setEditSuccess('');
+    setEditTravelPurposes((selectedHotel.travel_purpose || '').split(',').map(s => s.trim()).filter(Boolean));
+    setEditAmenities((selectedHotel.amenities || '').split(',').map(s => s.trim()).filter(Boolean));
+    resetEdit({
+      name: selectedHotel.name || '',
+      description: selectedHotel.description || '',
+      address: selectedHotel.address || '',
+      city: selectedHotel.city || '',
+      country: selectedHotel.country || '',
+      price_range: selectedHotel.price_range || '',
+    });
+    setShowEditModal(true);
+  };
+
+  const toggleEditPurpose = (p) => {
+    const next = editTravelPurposes.includes(p) ? editTravelPurposes.filter(x => x !== p) : [...editTravelPurposes, p];
+    setEditTravelPurposes(next);
+  };
+
+  const toggleEditAmenity = (a) => {
+    setEditAmenities(prev => prev.includes(a) ? prev.filter(x => x !== a) : [...prev, a]);
+  };
+
+  const onEditSubmit = async (data) => {
+    setEditError('');
+    setEditSuccess('');
+    try {
+      await updateHotel.mutateAsync({
+        id: selectedHotelId,
+        name: data.name,
+        description: data.description,
+        address: data.address,
+        city: data.city,
+        country: data.country,
+        location: data.city,
+        price_range: data.price_range,
+        travel_purpose: editTravelPurposes.join(', '),
+        amenities: editAmenities.join(', '),
+      });
+      setEditSuccess('Hotel details updated successfully');
+    } catch (err) {
+      setEditError(err?.response?.data?.message || 'Failed to update hotel. Please try again.');
+    }
   };
 
   const formatDate = (d) => {
@@ -848,6 +917,13 @@ export default function HotelOwnerDashboard() {
                 <option key={h.id} value={h.id}>{h.name}</option>
               ))}
             </select>
+            <button type="button" className="hod-selector-edit" onClick={openEditModal}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M11 4H6C5.46957 4 4.96086 4.21071 4.58579 4.58579C4.21071 4.96086 4 5.46957 4 6V18C4 18.5304 4.21071 19.0391 4.58579 19.4142C4.96086 19.7893 5.46957 20 6 20H18C18.5304 20 19.0391 19.7893 19.4142 19.4142C19.7893 19.0391 20 18.5304 20 18V13" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M18.5 2.5C18.8978 2.10218 19.4374 1.87868 20 1.87868C20.5626 1.87868 21.1022 2.10218 21.5 2.5C21.8978 2.89782 22.1213 3.43739 22.1213 4C22.1213 4.56261 21.8978 5.10218 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Edit Details
+            </button>
           </div>
         )}
 
@@ -984,6 +1060,139 @@ export default function HotelOwnerDashboard() {
         {tab === 'rooms' && selectedHotelId && renderRooms()}
         {tab === 'images' && selectedHotelId && renderImages()}
       </div>
+
+      {showEditModal && (
+        <div className="hod-modal-overlay" onClick={() => setShowEditModal(false)}>
+          <div className="hod-modal" onClick={e => e.stopPropagation()}>
+            <div className="hod-modal-header">
+              <div>
+                <div className="hod-modal-title">Edit Hotel Details</div>
+                <div className="hod-modal-sub">{selectedHotel?.name || ''}</div>
+              </div>
+              <button className="hod-modal-close" onClick={() => setShowEditModal(false)} aria-label="Close">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 6L6 18M6 6L18 18" stroke="#5B6B85" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <div className="hod-modal-scroll">
+              <form onSubmit={handleEditSubmit(onEditSubmit)} className="hod-edit-form">
+                <div className="hod-field">
+                  <label className="hod-label">Hotel Name *</label>
+                  <input className="hod-input" placeholder="Hotel name" {...regEdit('name')} />
+                  {editErrors.name && <span className="hod-error">{editErrors.name.message}</span>}
+                </div>
+
+                <div className="hod-field">
+                  <label className="hod-label">Description *</label>
+                  <textarea className="hod-textarea" rows={4} maxLength={500} placeholder="Describe your hotel..." {...regEdit('description')} />
+                  <div className="hod-char-count">{(watchEdit('description') || '').length}/500</div>
+                  {editErrors.description && <span className="hod-error">{editErrors.description.message}</span>}
+                </div>
+
+                <div className="hod-field">
+                  <label className="hod-label">Address *</label>
+                  <input className="hod-input" placeholder="Address" {...regEdit('address')} />
+                  {editErrors.address && <span className="hod-error">{editErrors.address.message}</span>}
+                </div>
+
+                <div className="hod-field-row">
+                  <div className="hod-field">
+                    <label className="hod-label">City *</label>
+                    <input className="hod-input" placeholder="City" {...regEdit('city')} />
+                    {editErrors.city && <span className="hod-error">{editErrors.city.message}</span>}
+                  </div>
+                  <div className="hod-field">
+                    <label className="hod-label">Country *</label>
+                    <input className="hod-input" placeholder="Country" {...regEdit('country')} />
+                    {editErrors.country && <span className="hod-error">{editErrors.country.message}</span>}
+                  </div>
+                </div>
+
+                <div className="hod-field">
+                  <label className="hod-label">Price Range *</label>
+                  <div className="hod-price-grid">
+                    {PRICE_RANGES.map(pr => (
+                      <button
+                        key={pr}
+                        type="button"
+                        className={`hod-price-card ${watchEdit('price_range') === pr ? 'hod-price-card-active' : ''}`}
+                        onClick={() => setEditValue('price_range', pr, { shouldValidate: true })}
+                      >
+                        {pr}
+                      </button>
+                    ))}
+                  </div>
+                  {editErrors.price_range && <span className="hod-error">{editErrors.price_range.message}</span>}
+                </div>
+
+                <div className="hod-field">
+                  <label className="hod-label">Travel Purposes</label>
+                  <div className="hod-chip-grid">
+                    {TRAVEL_PURPOSES.map(p => (
+                      <button
+                        key={p}
+                        type="button"
+                        className={`hod-chip ${editTravelPurposes.includes(p) ? 'hod-chip-active' : ''}`}
+                        onClick={() => toggleEditPurpose(p)}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="hod-field">
+                  <label className="hod-label">Amenities</label>
+                  <div className="hod-chip-grid">
+                    {AMENITIES.map(a => (
+                      <button
+                        key={a}
+                        type="button"
+                        className={`hod-chip ${editAmenities.includes(a) ? 'hod-chip-active' : ''}`}
+                        onClick={() => toggleEditAmenity(a)}
+                      >
+                        {a}
+                      </button>
+                    ))}
+                    {editAmenities.length > 0 && <span className="hod-chip-count">{editAmenities.length} selected</span>}
+                  </div>
+                </div>
+
+                {editError && (
+                  <div className="hod-banner hod-banner-error">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="6.33" stroke="#D32F2F" strokeWidth="1.33"/>
+                      <path d="M8 5V8.67" stroke="#D32F2F" strokeWidth="1.33" strokeLinecap="round"/>
+                      <circle cx="8" cy="11" r="0.67" fill="#D32F2F"/>
+                    </svg>
+                    {editError}
+                  </div>
+                )}
+                {editSuccess && (
+                  <div className="hod-banner hod-banner-success">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="6.33" stroke="#059669" strokeWidth="1.33"/>
+                      <path d="M5 8.2L7 10.2L11 6" stroke="#059669" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {editSuccess}
+                  </div>
+                )}
+
+                <div className="hod-modal-footer">
+                  <button type="button" className="hod-btn hod-btn-cancel" onClick={() => setShowEditModal(false)}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="hod-btn hod-btn-submit" disabled={updateHotel.isPending}>
+                    {updateHotel.isPending ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

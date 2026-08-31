@@ -50,12 +50,19 @@ export default function App() {
       <Route
         path="/email-verification"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="owner">
             <EmailVerification />
           </ProtectedRoute>
         }
       />
-      <Route path="/hotel-owner-dashboard" element={<HotelOwnerDashboard />} />
+      <Route
+        path="/hotel-owner-dashboard"
+        element={
+          <ProtectedRoute requiredRole="owner">
+            <HotelOwnerDashboard />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/hotel-registration"
         element={
@@ -80,11 +87,18 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="/admin-dashboard" element={<AdminDashboard />} />
+      <Route
+        path="/admin-dashboard"
+        element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/home"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="traveler">
             <AuthLayout><Home /></AuthLayout>
           </ProtectedRoute>
         }
@@ -92,7 +106,7 @@ export default function App() {
       <Route
         path="/search"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="traveler">
             <AuthLayout><SearchResults /></AuthLayout>
           </ProtectedRoute>
         }
@@ -100,7 +114,7 @@ export default function App() {
       <Route
         path="/hotel/:id"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="traveler">
             <AuthLayout><HotelDetail /></AuthLayout>
           </ProtectedRoute>
         }
@@ -108,7 +122,7 @@ export default function App() {
       <Route
         path="/booking/:hotelId"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="traveler">
             <AuthLayout><Booking /></AuthLayout>
           </ProtectedRoute>
         }
@@ -116,7 +130,7 @@ export default function App() {
       <Route
         path="/confirmation"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="traveler">
             <AuthLayout><Confirmation /></AuthLayout>
           </ProtectedRoute>
         }
@@ -124,7 +138,7 @@ export default function App() {
       <Route
         path="/my-bookings"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="traveler">
             <AuthLayout><UserDashboard /></AuthLayout>
           </ProtectedRoute>
         }
@@ -132,7 +146,7 @@ export default function App() {
       <Route
         path="/my-booking/:bookingCode"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="traveler">
             <AuthLayout><MyBookingDetail /></AuthLayout>
           </ProtectedRoute>
         }
