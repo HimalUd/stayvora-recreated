@@ -25,9 +25,10 @@ if (!$id || !is_numeric($id)) {
 }
 
 $stmt = $conn->prepare(
-    "SELECT b.*, h.name as hotel_name, h.owner_id, u.email as user_email
+    "SELECT b.*, h.name as hotel_name, h.owner_id, r.room_type, u.email as user_email
      FROM bookings b
      JOIN hotels h ON b.hotel_id = h.id
+     JOIN rooms r ON b.room_id = r.id
      JOIN users u ON b.user_id = u.id
      WHERE b.id = ?"
 );
@@ -64,6 +65,6 @@ $stmt->execute([
     "The booking for " . $booking['hotel_name'] . " (" . $updatedBooking['booking_code'] . ") was cancelled."
 ]);
 
-sendBookingStatusUpdate($booking['user_email'], $updatedBooking, 'cancelled');
+sendBookingStatusUpdate($booking['user_email'], $updatedBooking, 'cancelled', $booking['hotel_name'], $booking['room_type'] ?? '');
 
 jsonResponse(["message" => "Booking cancelled successfully", "booking" => $updatedBooking]);

@@ -46,6 +46,7 @@ export const bookingsAPI = {
   listOwner: (hotelId) => api.get('/api/bookings/list_owner', { params: hotelId ? { hotel_id: hotelId } : {} }),
   confirm: (id) => api.put('/api/bookings/confirm', { id }),
   cancel: (id) => api.put('/api/bookings/cancel', { id }),
+  cancelUser: (id) => api.put('/api/bookings/cancel_user', { id }),
 };
 
 export const eventsAPI = {

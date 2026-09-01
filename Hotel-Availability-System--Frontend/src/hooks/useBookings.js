@@ -45,3 +45,13 @@ export function useCancelBooking() {
     },
   });
 }
+
+export function useCancelBookingByUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => bookingsAPI.cancelUser(id).then(r => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+    },
+  });
+}

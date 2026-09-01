@@ -98,13 +98,14 @@ try {
 
     try {
         $userEmail = $_SESSION['email'] ?? '';
-        sendBookingConfirmation($userEmail, $booking, $hotel['name']);
+        $roomType = $room['room_type'] ?? '';
+        sendBookingPlacedToCustomer($userEmail, $booking, $hotel['name'], $roomType);
 
         $stmt = $conn->prepare("SELECT email FROM users WHERE id = ?");
         $stmt->execute([$hotel['owner_id']]);
         $owner = $stmt->fetch();
         if ($owner) {
-            sendBookingConfirmation($owner['email'], $booking, $hotel['name']);
+            sendBookingPlacedToOwner($owner['email'], $booking, $hotel['name'], $roomType);
         }
     } catch (Exception $e) {
     }

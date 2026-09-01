@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useUserBookings } from '../hooks/useBookings';
+import { useUserBookings, useCancelBookingByUser } from '../hooks/useBookings';
 import { useBookingReview, useHotelReviews, useSubmitReview } from '../hooks/useReviews';
 import StarRating from '../components/StarRating/StarRating';
 import { formatLKRFixed } from '../utils/currency';
@@ -65,6 +65,9 @@ export default function MyBookingDetail() {
   const { data: myReview, isLoading: reviewLoading } = useBookingReview(booking?.id);
   const { data: hotelReviews, isLoading: hotelReviewsLoading } = useHotelReviews(booking?.hotel_id);
   const submitReview = useSubmitReview();
+  const cancelBooking = useCancelBookingByUser();
+  const [cancelError, setCancelError] = useState('');
+  const [cancelled, setCancelled] = useState(false);
 
   useEffect(() => {
     if (myReview) {
@@ -128,6 +131,22 @@ export default function MyBookingDetail() {
 
   const canReview = currentStatus === 'confirmed';
 
+  const handleCancel = async () => {
+    if (!window.confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) return;
+    setCancelError('');
+    try {
+      await cancelBooking.mutateAsync(booking.id);
+      setCancelled(true);
+    } catch (err) {
+      setCancelError(err?.response?.data?.message || 'Failed to cancel booking');
+    }
+  };
+
+  const currentBooking = cancelled ? { ...booking, status: 'cancelled' } : booking;
+  const bookingStatus = currentBooking.status || 'pending';
+  const canCancel = bookingStatus === 'pending';
+  const showCancelled = bookingStatus === 'cancelled' && currentStatus !== 'cancelled';
+
   return (
     <div className="mbd-page">
       <div className="mbd-content">
@@ -141,10 +160,25 @@ export default function MyBookingDetail() {
             <h1 className="mbd-header-title">Booking Details</h1>
             <p className="mbd-header-id">Booking ID: {bookingCode}</p>
           </div>
-          <div className={`mbd-status-badge mbd-status-${currentStatus}`}>
-            {statusLabels[currentStatus] || currentStatus.toUpperCase()}
+          <div className={`mbd-status-badge mbd-status-${bookingStatus}`}>
+            {statusLabels[bookingStatus] || bookingStatus.toUpperCase()}
           </div>
         </div>
+
+        {cancelError && <p className="mbd-cancel-error">{cancelError}</p>}
+        {showCancelled && <p className="mbd-cancel-success">This booking has been cancelled.</p>}
+
+        {canCancel && (
+          <div className="mbd-cancel-action">
+            <button
+              className="mbd-btn mbd-btn-danger"
+              onClick={handleCancel}
+              disabled={cancelBooking.isPending}
+            >
+              {cancelBooking.isPending ? 'Cancelling...' : 'Cancel Booking'}
+            </button>
+          </div>
+        )}
 
         <div className="mbd-columns">
           <div className="mbd-card">

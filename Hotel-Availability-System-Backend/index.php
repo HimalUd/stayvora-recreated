@@ -53,6 +53,7 @@ $routes = [
     'api/bookings/list_owner'    => ['BookingController', 'listOwner'],
     'api/bookings/confirm'       => ['BookingController', 'confirm'],
     'api/bookings/cancel'        => ['BookingController', 'cancel'],
+    'api/bookings/cancel_user'   => ['BookingController', 'cancelUser'],
     'api/events/list'            => ['EventController', 'list'],
     'api/events/create'          => ['EventController', 'create'],
     'api/events/update'          => ['EventController', 'update'],

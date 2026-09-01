@@ -53,6 +53,11 @@ class AuthController extends Controller {
         unset($user['password_hash']);
         unset($user['verification_code']);
 
+        try {
+            sendRegistrationEmail($email, $name);
+        } catch (Exception $e) {
+        }
+
         $this->json(["message" => "Registration successful. Please login.", "user" => $user], 201);
     }
 
@@ -135,6 +140,11 @@ class AuthController extends Controller {
         $_SESSION['role'] = $user['role'];
         $_SESSION['name'] = $user['name'];
         $_SESSION['email'] = $user['email'];
+
+        try {
+            sendLoginAlertEmail($user['email'], $user['name']);
+        } catch (Exception $e) {
+        }
 
         unset($user['password_hash']);
         unset($user['verification_code']);

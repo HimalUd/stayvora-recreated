@@ -91,11 +91,12 @@ class BookingController extends Controller {
 
             try {
                 $userEmail = $_SESSION['email'] ?? '';
-                sendBookingConfirmation($userEmail, $booking, $hotel['name']);
+                $roomType = $room['room_type'] ?? '';
+                sendBookingPlacedToCustomer($userEmail, $booking, $hotel['name'], $roomType);
 
                 $ownerEmail = $this->userModel->getOwnerEmail($hotel['owner_id']);
                 if ($ownerEmail) {
-                    sendBookingConfirmation($ownerEmail, $booking, $hotel['name']);
+                    sendBookingPlacedToOwner($ownerEmail, $booking, $hotel['name'], $roomType);
                 }
             } catch (Exception $e) {
             }
@@ -142,7 +143,7 @@ class BookingController extends Controller {
 
         $this->bookingModel->confirmBooking($id);
         $updatedBooking = $this->bookingModel->findById($id);
-        sendBookingStatusUpdate($booking['user_email'], $updatedBooking, 'confirmed');
+        sendBookingStatusUpdate($booking['user_email'], $updatedBooking, 'confirmed', $booking['hotel_name'], $booking['room_type'] ?? '');
 
         $this->json(["message" => "Booking confirmed successfully", "booking" => $updatedBooking]);
     }
@@ -169,7 +170,43 @@ class BookingController extends Controller {
 
         $this->bookingModel->cancelBooking($id);
         $updatedBooking = $this->bookingModel->findById($id);
-        sendBookingStatusUpdate($booking['user_email'], $updatedBooking, 'cancelled');
+        sendBookingStatusUpdate($booking['user_email'], $updatedBooking, 'cancelled', $booking['hotel_name'], $booking['room_type'] ?? '');
+
+        $this->json(["message" => "Booking cancelled successfully", "booking" => $updatedBooking]);
+    }
+
+    public function cancelUser(): void {
+        $this->requireLogin();
+        $input = $this->getJsonInput();
+        $id = $this->getNumericId();
+
+        if (!$id) {
+            $this->json(["message" => "Booking ID is required"], 400);
+        }
+
+        $booking = $this->bookingModel->getBookingWithOwner($id);
+        if (!$booking) {
+            $this->json(["message" => "Booking not found"], 404);
+        }
+        if ($booking['user_id'] != $this->getUserId()) {
+            $this->json(["message" => "You can only cancel your own bookings"], 403);
+        }
+        if ($booking['status'] !== 'pending') {
+            $this->json(["message" => "Only pending bookings can be cancelled. The hotel owner has already responded to this booking."], 400);
+        }
+
+        $this->bookingModel->cancelBooking($id);
+        $updatedBooking = $this->bookingModel->findById($id);
+
+        $this->notificationModel->createForUser(
+            $booking['owner_id'],
+            $id,
+            'booking',
+            "Booking " . $updatedBooking['booking_code'] . " cancelled by customer",
+            "The booking for " . $booking['hotel_name'] . " (" . $updatedBooking['booking_code'] . ") was cancelled by the customer."
+        );
+
+        sendBookingStatusUpdate($booking['user_email'], $updatedBooking, 'cancelled', $booking['hotel_name'], $booking['room_type'] ?? '');
 
         $this->json(["message" => "Booking cancelled successfully", "booking" => $updatedBooking]);
     }

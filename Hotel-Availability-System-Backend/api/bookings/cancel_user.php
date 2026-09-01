@@ -13,7 +13,7 @@ require_once __DIR__ . '/../../config/session.php';
 require_once __DIR__ . '/../../utils/auth_middleware.php';
 require_once __DIR__ . '/../../utils/email.php';
 
-requireOwner();
+requireLogin();
 
 $db = new Database();
 $conn = $db->getConnection();
@@ -39,15 +39,15 @@ if (!$booking) {
     jsonResponse(["message" => "Booking not found"], 404);
 }
 
-if ($booking['owner_id'] != $_SESSION['user_id']) {
-    jsonResponse(["message" => "You can only confirm bookings for your own hotels"], 403);
+if ($booking['user_id'] != $_SESSION['user_id']) {
+    jsonResponse(["message" => "You can only cancel your own bookings"], 403);
 }
 
 if ($booking['status'] !== 'pending') {
-    jsonResponse(["message" => "Only pending bookings can be confirmed"], 400);
+    jsonResponse(["message" => "Only pending bookings can be cancelled. The hotel owner has already responded to this booking."], 400);
 }
 
-$stmt = $conn->prepare("UPDATE bookings SET status = 'confirmed' WHERE id = ?");
+$stmt = $conn->prepare("UPDATE bookings SET status = 'cancelled' WHERE id = ?");
 $stmt->execute([$id]);
 
 $stmt = $conn->prepare("SELECT * FROM bookings WHERE id = ?");
@@ -61,10 +61,10 @@ $stmt = $conn->prepare(
 $stmt->execute([
     $booking['owner_id'],
     $id,
-    "Booking " . $updatedBooking['booking_code'] . " confirmed",
-    "You confirmed the booking for " . $booking['hotel_name'] . " (" . $updatedBooking['booking_code'] . ")."
+    "Booking " . $updatedBooking['booking_code'] . " cancelled by customer",
+    "The booking for " . $booking['hotel_name'] . " (" . $updatedBooking['booking_code'] . ") was cancelled by the customer."
 ]);
 
-sendBookingStatusUpdate($booking['user_email'], $updatedBooking, 'confirmed', $booking['hotel_name'], $booking['room_type'] ?? '');
+sendBookingStatusUpdate($booking['user_email'], $updatedBooking, 'cancelled', $booking['hotel_name'], $booking['room_type'] ?? '');
 
-jsonResponse(["message" => "Booking confirmed successfully", "booking" => $updatedBooking]);
+jsonResponse(["message" => "Booking cancelled successfully", "booking" => $updatedBooking]);

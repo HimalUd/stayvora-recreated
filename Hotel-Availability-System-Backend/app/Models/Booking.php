@@ -58,9 +58,10 @@ class Booking extends Model {
 
     public function getBookingWithOwner(int $bookingId): ?array {
         return $this->fetchOne(
-            "SELECT b.*, h.name as hotel_name, h.owner_id, u.email as user_email
+            "SELECT b.*, h.name as hotel_name, h.owner_id, r.room_type, u.email as user_email
              FROM bookings b
              JOIN hotels h ON b.hotel_id = h.id
+             JOIN rooms r ON b.room_id = r.id
              JOIN users u ON b.user_id = u.id
              WHERE b.id = ?",
             [$bookingId]
