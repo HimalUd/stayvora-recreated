@@ -256,9 +256,9 @@
 }
 
 .landing-btn-outline:hover {
-  border-color: var(--blue);
-  color: var(--blue);
-  background: rgba(37, 99, 235, 0.06);
+  border-color: var(--gold-2);
+  color: #E8900B;
+  background: rgba(232, 144, 11, 0.08);
   transform: translateY(-1px);
 }
 
@@ -307,8 +307,9 @@
 }
 
 .landing-btn-nav-ghost:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.85);
+  background: rgba(245, 166, 36, 0.15);
+  border-color: #F5A624;
+  color: #fff;
   transform: translateY(-1px);
 }
 
@@ -319,9 +320,9 @@
 }
 
 .landing-navbar-scrolled .landing-btn-nav-ghost:hover {
-  border-color: var(--blue);
-  color: var(--blue);
-  background: rgba(37, 99, 235, 0.06);
+  border-color: var(--gold-2);
+  color: #E8900B;
+  background: rgba(232, 144, 11, 0.08);
 }
 
 .landing-btn-glass {
@@ -346,8 +347,9 @@
 }
 
 .landing-btn-glass:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.9);
+  background: rgba(245, 166, 36, 0.15);
+  border-color: #F5A624;
+  color: #fff;
   transform: translateY(-1px);
 }
 
