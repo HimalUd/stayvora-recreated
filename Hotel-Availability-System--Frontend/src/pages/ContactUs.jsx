@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Navbar from '../components/Navbar/Navbar';
 import logoLight from '../assets/logos/logo-light.png';
 import logoDark from '../assets/logos/logo-dark.png';
 import './Landing.css';
@@ -125,6 +126,8 @@ export default function ContactUs() {
     <div className="landing-page">
 
       {/* ============ NAVBAR ============ */}
+      {user && <Navbar />}
+      {!user && (
       <nav className={`landing-navbar ${scrolled ? 'landing-navbar-scrolled' : ''}`}>
         <div className="landing-navbar-inner">
           <Link to="/" className="landing-logo" onClick={() => setMenuOpen(false)}>
@@ -138,21 +141,17 @@ export default function ContactUs() {
           </div>
 
           <div className="landing-nav-actions">
-            {user ? (
-              <Link to="/home" className="landing-btn-gold">Book Hotels</Link>
-            ) : (
-              <>
-                <Link to="/login" className="landing-btn-nav-ghost">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                    <path d="M10 17l5-5-5-5" />
-                    <path d="M15 12H3" />
-                  </svg>
-                  Login
-                </Link>
-                <Link to="/register" className="landing-btn-gold">Sign Up</Link>
-              </>
-            )}
+            <>
+              <Link to="/login" className="landing-btn-nav-ghost">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                  <path d="M10 17l5-5-5-5" />
+                  <path d="M15 12H3" />
+                </svg>
+                Login
+              </Link>
+              <Link to="/register" className="landing-btn-gold">Sign Up</Link>
+            </>
             <button
               className={`landing-menu-toggle ${menuOpen ? 'landing-menu-toggle-open' : ''}`}
               onClick={() => setMenuOpen(prev => !prev)}
@@ -170,17 +169,12 @@ export default function ContactUs() {
           <Link to="/contact" className="landing-mobile-link" onClick={() => setMenuOpen(false)}>Contact Us</Link>
           <Link to="/hotel-owner-portal" className="landing-mobile-link" onClick={() => setMenuOpen(false)}>Hotel Owner Portal</Link>
           <div className="landing-mobile-auth">
-            {user ? (
-              <Link to="/home" className="landing-btn-gold" onClick={() => setMenuOpen(false)}>Book Hotels</Link>
-            ) : (
-              <>
-                <Link to="/login" className="landing-btn-outline" onClick={() => setMenuOpen(false)}>Login</Link>
-                <Link to="/register" className="landing-btn-gold" onClick={() => setMenuOpen(false)}>Sign Up</Link>
-              </>
-            )}
+            <Link to="/login" className="landing-btn-outline" onClick={() => setMenuOpen(false)}>Login</Link>
+            <Link to="/register" className="landing-btn-gold" onClick={() => setMenuOpen(false)}>Sign Up</Link>
           </div>
         </div>
       </nav>
+      )}
 
       {/* ============ HERO ============ */}
       <section className="cu-hero">

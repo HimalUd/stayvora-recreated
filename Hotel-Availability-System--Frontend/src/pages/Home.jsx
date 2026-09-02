@@ -162,6 +162,7 @@ export default function Home() {
 
   // Search bar state
   const [location, setLocation] = useState('');
+  const [hotelName, setHotelName] = useState('');
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [guests, setGuests] = useState(2);
@@ -292,7 +293,8 @@ export default function Home() {
 
   const handleSearch = () => {
     const params = new URLSearchParams();
-    if (location) params.set('location', location);
+    if (hotelName) params.set('location', hotelName);
+    else if (location) params.set('location', location);
     if (checkIn) params.set('check_in', checkIn);
     if (checkOut) params.set('check_out', checkOut);
     if (guests) params.set('guests', guests);
@@ -362,6 +364,22 @@ export default function Home() {
                 placeholder="Search destinations, hotels..."
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="search-divider" />
+          <div className="search-field search-field-location">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M20 21v-2a4 4 0 0 0-3-3.87M12 21v-2a4 4 0 0 0-3-3.87M4 21v-2a4 4 0 0 1 3-3.87M4 21v-1m0-5.13A4 4 0 0 1 4 9.13M13.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM20 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
+            </svg>
+            <div className="search-field-text">
+              <span className="search-label">Hotel name</span>
+              <input
+                type="text"
+                className="search-input search-input-location"
+                placeholder="Search by hotel name..."
+                value={hotelName}
+                onChange={(e) => setHotelName(e.target.value)}
               />
             </div>
           </div>
