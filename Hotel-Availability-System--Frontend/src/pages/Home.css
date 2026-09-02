@@ -289,18 +289,28 @@
   position: relative;
   z-index: 3;
   margin-top: 20px;
-  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
-  text-decoration: underline;
-  text-decoration-color: rgba(245, 166, 36, 0.6);
-  text-underline-offset: 4px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   cursor: pointer;
-  transition: color 0.2s;
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .home-additional-filter:hover {
-  color: #FFD166;
+  background: linear-gradient(135deg, #FFD166, #F5A624);
+  border-color: transparent;
+  color: #1A2B49;
+  transform: translateY(-2px);
 }
 
 .home-additional-filter-badge {
@@ -310,14 +320,115 @@
   min-width: 18px;
   height: 18px;
   padding: 0 5px;
-  margin-left: 6px;
   background: linear-gradient(135deg, #FFD166, #F5A624);
   color: #1A2B49;
   font-size: 0.7rem;
   font-weight: 700;
   border-radius: 999px;
-  vertical-align: 1px;
-  text-decoration: none;
+}
+
+/* ===== FIRST-TIME GUIDE POPUP ===== */
+.home-guide-popup {
+  position: absolute;
+  z-index: 6;
+  left: 0;
+  margin-top: 14px;
+  width: 320px;
+  max-width: calc(100vw - 40px);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(10, 27, 51, 0.25);
+  padding: 22px 22px 18px;
+  animation: homeGuideIn 0.35s ease;
+}
+
+@keyframes homeGuideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.home-guide-popup-pointer {
+  position: absolute;
+  top: -8px;
+  left: 44px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  transform: rotate(45deg);
+  border-radius: 3px;
+}
+
+.home-guide-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #9CA3AF;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
+}
+
+.home-guide-close:hover {
+  background: rgba(10, 27, 51, 0.06);
+  color: #1A2B49;
+}
+
+.home-guide-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255, 209, 102, 0.25), rgba(245, 166, 36, 0.25));
+  color: #F5A624;
+  margin-bottom: 14px;
+}
+
+.home-guide-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1A2B49;
+  margin: 0 0 6px;
+}
+
+.home-guide-text {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #4B5563;
+  margin: 0 0 16px;
+}
+
+.home-guide-text strong {
+  color: #F5A624;
+}
+
+.home-guide-btn {
+  width: 100%;
+  padding: 11px 16px;
+  background: linear-gradient(135deg, #FFD166, #F5A624);
+  color: #1A2B49;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.home-guide-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(245, 166, 36, 0.35);
 }
 
 /* ===== DASHBOARD / MY BOOKINGS ===== */

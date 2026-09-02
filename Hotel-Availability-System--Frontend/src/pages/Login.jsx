@@ -29,6 +29,7 @@ export default function Login() {
       } else if (result?.user?.role === 'owner') {
         navigate('/hotel-owner-dashboard');
       } else {
+        if (registered) sessionStorage.setItem('showHomeGuide', '1');
         navigate('/home');
       }
     } catch (err) {

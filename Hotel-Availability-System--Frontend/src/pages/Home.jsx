@@ -152,6 +152,7 @@ const PRICE_MAX = 100000;
 export default function Home() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [showGuide, setShowGuide] = useState(() => sessionStorage.getItem('showHomeGuide') === '1');
   const { data: hotels = [] } = useHotels();
   const { data: bookings = [] } = useQuery({
     queryKey: ['bookings', 'user-home'],
@@ -452,7 +453,10 @@ export default function Home() {
 
         
         <div className="home-additional-filter" onClick={openOverlay}>
-          Additional filter
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
+          </svg>
+          <span>Additional Filters</span>
           {activeFilterCount > 0 && <span className="home-additional-filter-badge">{activeFilterCount}</span>}
         </div>
 
@@ -462,6 +466,30 @@ export default function Home() {
             <path d="M1 1l6 6 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
+
+        {showGuide && (
+          <div className="home-guide-popup">
+            <div className="home-guide-popup-pointer" />
+            <button
+              className="home-guide-close"
+              onClick={() => { setShowGuide(false); sessionStorage.removeItem('showHomeGuide'); }}
+              aria-label="Close guide"
+            >✕</button>
+            <div className="home-guide-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
+              </svg>
+            </div>
+            <h4 className="home-guide-title">New here? Let's guide you!</h4>
+            <p className="home-guide-text">
+              Use <strong>Additional Filters</strong> to refine your stay by location, price, rating, travel purpose, events, and amenities.
+            </p>
+            <button
+              className="home-guide-btn"
+              onClick={() => { setShowGuide(false); sessionStorage.removeItem('showHomeGuide'); }}
+            >Got it</button>
+          </div>
+        )}
       </section>
 
       {/* ===== MY BOOKINGS ===== */}
