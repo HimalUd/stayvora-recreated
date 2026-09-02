@@ -111,14 +111,20 @@ function HotelCard({ hotel }) {
 
 function DestinationCard({ dest }) {
   return (
-    <div className="dest-card">
+    <Link to={`/search?location=${dest.name}`} className="dest-card">
       <div className="dest-card-image" style={{ backgroundImage: `url(${dest.image})` }} />
       <div className="dest-card-overlay" />
       <div className="dest-card-content">
         <h3 className="dest-card-name">{dest.name}</h3>
         <span className="dest-card-count">{dest.count}</span>
+        <span className="dest-card-explore">
+          Explore
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </span>
       </div>
-    </div>
+    </Link>
   );
 }
 

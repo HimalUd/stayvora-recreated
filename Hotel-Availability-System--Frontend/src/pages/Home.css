@@ -702,10 +702,12 @@
 
 .dest-card {
   position: relative;
+  display: block;
   height: 380px;
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
+  text-decoration: none;
   transition: transform 0.35s ease, box-shadow 0.35s ease;
   box-shadow: 0 4px 16px rgba(10, 27, 51, 0.08);
 }
@@ -759,6 +761,27 @@
   -webkit-backdrop-filter: blur(8px);
   padding: 4px 12px;
   border-radius: 100px;
+}
+
+.dest-card-explore {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.95;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 4px 12px;
+  border-radius: 100px;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.dest-card:hover .dest-card-explore {
+  background: #F5A624;
+  color: #1A2B49;
 }
 
 /* ===== TESTIMONIALS ===== */
