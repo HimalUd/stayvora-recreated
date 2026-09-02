@@ -194,6 +194,166 @@
   gap: 0.75rem;
 }
 
+/* ============ USER MENU (logged in) ============ */
+.landing-user-menu {
+  position: relative;
+}
+
+.landing-user-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 6px;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.landing-user-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.landing-navbar-scrolled .landing-user-btn {
+  border-color: rgba(26, 43, 73, 0.2);
+  background: #fff;
+}
+
+.landing-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563EB, #9810FA);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  flex-shrink: 0;
+}
+
+.landing-user-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.landing-navbar-scrolled .landing-user-name {
+  color: var(--navy-800);
+}
+
+.landing-user-chevron {
+  color: #fff;
+  transition: transform 0.2s;
+}
+
+.landing-navbar-scrolled .landing-user-chevron {
+  color: var(--navy-800);
+}
+
+.landing-user-dropdown {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(10, 27, 51, 0.16);
+  border: 1px solid rgba(10, 27, 51, 0.06);
+  min-width: 250px;
+  padding: 8px 0;
+  z-index: 1001;
+  animation: landingUserFade 0.2s ease;
+}
+
+@keyframes landingUserFade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.landing-user-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.landing-user-dropdown-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563EB, #9810FA);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  flex-shrink: 0;
+}
+
+.landing-user-dropdown-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1A2B49;
+  font-family: 'Inter', sans-serif;
+}
+
+.landing-user-dropdown-email {
+  font-size: 12px;
+  color: #6B7280;
+  font-family: 'Inter', sans-serif;
+  word-break: break-all;
+}
+
+.landing-user-dropdown-divider {
+  height: 1px;
+  background: #E5E7EB;
+  margin: 4px 0;
+}
+
+.landing-user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+  transition: background 0.1s;
+}
+
+.landing-user-dropdown-item:hover {
+  background: #F3F4F6;
+}
+
+.landing-user-dropdown-logout {
+  color: #DC2626;
+}
+
+.landing-user-dropdown-logout:hover {
+  background: #FEF2F2;
+}
+
 /* ============ MENU TOGGLE ============ */
 .landing-menu-toggle {
   display: none;
@@ -1388,7 +1548,8 @@
 
   .landing-nav-actions .landing-btn-outline,
   .landing-nav-actions .landing-btn-gold,
-  .landing-nav-actions .landing-btn-nav-ghost {
+  .landing-nav-actions .landing-btn-nav-ghost,
+  .landing-nav-actions .landing-user-menu {
     display: none;
   }
 
@@ -1434,6 +1595,27 @@
   .landing-mobile-auth .landing-btn-gold {
     flex: 1;
     display: inline-flex;
+  }
+
+  .landing-mobile-user {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 4px;
+    color: var(--navy-800);
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .landing-mobile-user .landing-user-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .landing-mobile-auth .landing-btn-mobile-logout {
+    flex: 1;
   }
 
   .landing-hero-title {

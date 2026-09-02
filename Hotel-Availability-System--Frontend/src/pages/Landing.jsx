@@ -147,15 +147,27 @@ function Stars() {
 }
 
 export default function Landing() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
   return (
@@ -169,6 +181,7 @@ export default function Landing() {
           </Link>
 
           <div className="landing-nav-links">
+            {user && <Link to="/home" className="landing-nav-link landing-nav-link-blue">Home</Link>}
             <Link to="/about" className="landing-nav-link landing-nav-link-blue">About Us</Link>
             <Link to="/contact" className="landing-nav-link landing-nav-link-blue">Contact Us</Link>
             <Link to="/hotel-owner-portal" className="landing-nav-link landing-nav-link-purple">Hotel Owner Portal</Link>
@@ -176,7 +189,46 @@ export default function Landing() {
 
           <div className="landing-nav-actions">
             {user ? (
-              <Link to="/home" className="landing-btn-gold">Book Hotels</Link>
+              <div className="landing-user-menu" ref={userMenuRef}>
+                <button
+                  className="landing-user-btn"
+                  onClick={() => setUserMenuOpen(prev => !prev)}
+                  aria-label="Open user menu"
+                >
+                  <div className="landing-user-avatar">{user.name?.charAt(0)?.toUpperCase() || 'U'}</div>
+                  <span className="landing-user-name">{user.name || 'User'}</span>
+                  <svg className="landing-user-chevron" width="12" height="8" viewBox="0 0 12 8" fill="none">
+                    <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                </button>
+                {userMenuOpen && (
+                  <div className="landing-user-dropdown">
+                    <div className="landing-user-dropdown-header">
+                      <div className="landing-user-dropdown-avatar">{user.name?.charAt(0)?.toUpperCase() || 'U'}</div>
+                      <div>
+                        <div className="landing-user-dropdown-name">{user.name || 'User'}</div>
+                        <div className="landing-user-dropdown-email">{user.email || ''}</div>
+                      </div>
+                    </div>
+                    <div className="landing-user-dropdown-divider" />
+                    <Link to="/my-bookings" className="landing-user-dropdown-item" onClick={() => setUserMenuOpen(false)}>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M2 14V5.5L8 1.5L14 5.5V14H10V9H6V14H2Z" stroke="currentColor" strokeWidth="1.33" strokeLinejoin="round"/>
+                      </svg>
+                      My Bookings
+                    </Link>
+                    <div className="landing-user-dropdown-divider" />
+                    <button className="landing-user-dropdown-item landing-user-dropdown-logout" onClick={() => { setUserMenuOpen(false); logout(); }}>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M6 14H2.67C2.3 14 2 13.7 2 13.33V2.67C2 2.3 2.3 2 2.67 2H6" stroke="currentColor" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M10.67 11.33L14 8L10.67 4.67" stroke="currentColor" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M14 8H6" stroke="currentColor" strokeWidth="1.33" strokeLinecap="round"/>
+                      </svg>
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <>
                 <Link to="/login" className="landing-btn-nav-ghost">
@@ -203,12 +255,20 @@ export default function Landing() {
         </div>
 
         <div className={`landing-mobile-menu ${menuOpen ? 'landing-mobile-menu-open' : ''}`}>
+          {user && <Link to="/home" className="landing-mobile-link" onClick={() => setMenuOpen(false)}>Home</Link>}
           <Link to="/about" className="landing-mobile-link" onClick={() => setMenuOpen(false)}>About Us</Link>
           <Link to="/contact" className="landing-mobile-link" onClick={() => setMenuOpen(false)}>Contact Us</Link>
           <Link to="/hotel-owner-portal" className="landing-mobile-link" onClick={() => setMenuOpen(false)}>Hotel Owner Portal</Link>
           <div className="landing-mobile-auth">
             {user ? (
-              <Link to="/home" className="landing-btn-gold" onClick={() => setMenuOpen(false)}>Book Hotels</Link>
+              <>
+                <div className="landing-mobile-user">
+                  <div className="landing-user-avatar">{user.name?.charAt(0)?.toUpperCase() || 'U'}</div>
+                  <span>{user.name || 'User'}</span>
+                </div>
+                <Link to="/my-bookings" className="landing-btn-outline" onClick={() => setMenuOpen(false)}>My Bookings</Link>
+                <button className="landing-btn-gold landing-btn-mobile-logout" onClick={() => { setMenuOpen(false); logout(); }}>Logout</button>
+              </>
             ) : (
               <>
                 <Link to="/login" className="landing-btn-outline" onClick={() => setMenuOpen(false)}>
