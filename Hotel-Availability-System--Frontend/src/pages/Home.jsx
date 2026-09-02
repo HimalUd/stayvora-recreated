@@ -285,6 +285,10 @@ export default function Home() {
     tags: h.amenities ? h.amenities.split(',').map(t => t.trim()).filter(Boolean).slice(0, 3) : [],
   }));
 
+  const HOTELS_LIMIT = 20;
+  const shownHotels = displayHotels.slice(0, HOTELS_LIMIT);
+  const hasMoreHotels = displayHotels.length > HOTELS_LIMIT;
+
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (location) params.set('location', location);
@@ -540,12 +544,22 @@ export default function Home() {
             </div>
           </Reveal>
           <div className="hotels-grid">
-            {displayHotels.map((hotel, i) => (
+            {shownHotels.map((hotel, i) => (
               <Reveal key={hotel.id} delay={i * 70}>
                 <HotelCard hotel={hotel} />
               </Reveal>
             ))}
           </div>
+          {hasMoreHotels && (
+            <div className="hotels-show-more-wrap">
+              <Link to="/search" className="hotels-show-more-btn">
+                Show More Hotels
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 

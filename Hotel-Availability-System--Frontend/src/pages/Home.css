@@ -496,6 +496,36 @@
   gap: 24px;
 }
 
+.hotels-show-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.hotels-show-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border-radius: 50px;
+  border: 2px solid #F5A624;
+  color: #F5A624;
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.hotels-show-more-btn:hover {
+  background: #F5A624;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+
 /* ===== HOTEL CARD ===== */
 .hotel-card {
   background: #fff;
