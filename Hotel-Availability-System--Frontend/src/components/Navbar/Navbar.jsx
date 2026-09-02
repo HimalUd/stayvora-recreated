@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import logoDark from '../../assets/logos/logo-dark.png';
 import './Navbar.css';
@@ -9,7 +9,9 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [homeSection, setHomeSection] = useState('hero');
   const menuRef = useRef(null);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -17,6 +19,33 @@ export default function Navbar() {
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    if (pathname !== '/home') {
+      setHomeSection('hero');
+      return;
+    }
+    const hotelsSection = document.querySelector('.home-hotels-section');
+    const heroSection = document.querySelector('.home-hero');
+    if (!hotelsSection) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (entry.target === hotelsSection) setHomeSection('hotels');
+            else if (entry.target === heroSection) setHomeSection('hero');
+          }
+        });
+      },
+      { rootMargin: '-40% 0px -50% 0px' }
+    );
+    if (hotelsSection) observer.observe(hotelsSection);
+    if (heroSection) observer.observe(heroSection);
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  const isHomeActive = pathname === '/home' && homeSection === 'hero';
+  const isHotelsActive = pathname === '/home' && homeSection === 'hotels';
 
   useEffect(() => {
     function handleClick(e) {
@@ -35,8 +64,31 @@ export default function Navbar() {
           <img src={logoDark} alt="StayVora" className="navbar-logo-img" />
         </Link>
         <div className="navbar-links">
-          <NavLink to="/home" end className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}>Home</NavLink>
-          <NavLink to="/home" className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}>Hotels</NavLink>
+          <Link
+            to="/home"
+            onClick={(e) => {
+              if (pathname === '/home') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setHomeSection('hero');
+              }
+            }}
+            className={`navbar-link ${isHomeActive ? 'active' : ''}`}
+          >Home</Link>
+          <Link
+            to="/home"
+            onClick={(e) => {
+              if (pathname === '/home') {
+                e.preventDefault();
+                const el = document.querySelector('.home-hotels-section');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                  setHomeSection('hotels');
+                }
+              }
+            }}
+            className={`navbar-link ${isHotelsActive ? 'active' : ''}`}
+          >Hotels</Link>
           <NavLink to="/about" className="navbar-link">About Us</NavLink>
           <NavLink to="/contact" className="navbar-link">Contact Us</NavLink>
           <NavLink to="/hotel-owner-portal" className="navbar-link navbar-link-purple">Hotel Owner Portal</NavLink>
@@ -86,8 +138,33 @@ export default function Navbar() {
       </div>
 
       <div className={`navbar-mobile-menu ${mobileOpen ? 'navbar-mobile-menu-open' : ''}`}>
-        <NavLink to="/home" end className="navbar-mobile-link" onClick={() => setMobileOpen(false)}>Home</NavLink>
-        <NavLink to="/home" className="navbar-mobile-link" onClick={() => setMobileOpen(false)}>Hotels</NavLink>
+        <Link
+          to="/home"
+          onClick={(e) => {
+            setMobileOpen(false);
+            if (pathname === '/home') {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              setHomeSection('hero');
+            }
+          }}
+          className={`navbar-mobile-link ${isHomeActive ? 'active' : ''}`}
+        >Home</Link>
+        <Link
+          to="/home"
+          onClick={(e) => {
+            setMobileOpen(false);
+            if (pathname === '/home') {
+              e.preventDefault();
+              const el = document.querySelector('.home-hotels-section');
+              if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+                setHomeSection('hotels');
+              }
+            }
+          }}
+          className={`navbar-mobile-link ${isHotelsActive ? 'active' : ''}`}
+        >Hotels</Link>
         <NavLink to="/about" className="navbar-mobile-link" onClick={() => setMobileOpen(false)}>About Us</NavLink>
         <NavLink to="/contact" className="navbar-mobile-link" onClick={() => setMobileOpen(false)}>Contact Us</NavLink>
         <NavLink to="/hotel-owner-portal" className="navbar-mobile-link" onClick={() => setMobileOpen(false)}>Hotel Owner Portal</NavLink>
