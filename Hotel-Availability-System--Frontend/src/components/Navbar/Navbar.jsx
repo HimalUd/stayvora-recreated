@@ -45,7 +45,7 @@ export default function Navbar() {
   }, [pathname]);
 
   const isHomeActive = pathname === '/home' && homeSection === 'hero';
-  const isHotelsActive = pathname === '/home' && homeSection === 'hotels';
+  const isHotelsActive = (pathname === '/home' && homeSection === 'hotels') || pathname === '/search';
 
   useEffect(() => {
     function handleClick(e) {
@@ -85,6 +85,9 @@ export default function Navbar() {
                   el.scrollIntoView({ behavior: 'smooth' });
                   setHomeSection('hotels');
                 }
+              } else if (pathname === '/search') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}
             className={`navbar-link ${isHotelsActive ? 'active' : ''}`}
@@ -161,6 +164,9 @@ export default function Navbar() {
                 el.scrollIntoView({ behavior: 'smooth' });
                 setHomeSection('hotels');
               }
+            } else if (pathname === '/search') {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }
           }}
           className={`navbar-mobile-link ${isHotelsActive ? 'active' : ''}`}
