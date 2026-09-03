@@ -9,7 +9,6 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [homeSection, setHomeSection] = useState('hero');
   const menuRef = useRef(null);
   const { pathname } = useLocation();
 
@@ -20,32 +19,8 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => {
-    if (pathname !== '/home') {
-      setHomeSection('hero');
-      return;
-    }
-    const hotelsSection = document.querySelector('.home-hotels-section');
-    const heroSection = document.querySelector('.home-hero');
-    if (!hotelsSection) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            if (entry.target === hotelsSection) setHomeSection('hotels');
-            else if (entry.target === heroSection) setHomeSection('hero');
-          }
-        });
-      },
-      { rootMargin: '-40% 0px -50% 0px' }
-    );
-    if (hotelsSection) observer.observe(hotelsSection);
-    if (heroSection) observer.observe(heroSection);
-    return () => observer.disconnect();
-  }, [pathname]);
-
-  const isHomeActive = pathname === '/home' && homeSection === 'hero';
-  const isHotelsActive = (pathname === '/home' && homeSection === 'hotels') || pathname === '/search';
+  const isHomeActive = pathname === '/home';
+  const isHotelsActive = pathname === '/hotels' || pathname === '/search';
 
   useEffect(() => {
     function handleClick(e) {
@@ -70,26 +45,13 @@ export default function Navbar() {
               if (pathname === '/home') {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                setHomeSection('hero');
               }
             }}
             className={`navbar-link ${isHomeActive ? 'active' : ''}`}
           >Home</Link>
           <Link
-            to="/home"
-            onClick={(e) => {
-              if (pathname === '/home') {
-                e.preventDefault();
-                const el = document.querySelector('.home-hotels-section');
-                if (el) {
-                  el.scrollIntoView({ behavior: 'smooth' });
-                  setHomeSection('hotels');
-                }
-              } else if (pathname === '/search') {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }
-            }}
+            to="/hotels"
+            onClick={() => setMobileOpen(false)}
             className={`navbar-link ${isHotelsActive ? 'active' : ''}`}
           >Hotels</Link>
           <NavLink to="/about" className="navbar-link">About Us</NavLink>
@@ -148,27 +110,13 @@ export default function Navbar() {
             if (pathname === '/home') {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: 'smooth' });
-              setHomeSection('hero');
             }
           }}
           className={`navbar-mobile-link ${isHomeActive ? 'active' : ''}`}
         >Home</Link>
         <Link
-          to="/home"
-          onClick={(e) => {
-            setMobileOpen(false);
-            if (pathname === '/home') {
-              e.preventDefault();
-              const el = document.querySelector('.home-hotels-section');
-              if (el) {
-                el.scrollIntoView({ behavior: 'smooth' });
-                setHomeSection('hotels');
-              }
-            } else if (pathname === '/search') {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-          }}
+          to="/hotels"
+          onClick={() => setMobileOpen(false)}
           className={`navbar-mobile-link ${isHotelsActive ? 'active' : ''}`}
         >Hotels</Link>
         <NavLink to="/about" className="navbar-mobile-link" onClick={() => setMobileOpen(false)}>About Us</NavLink>

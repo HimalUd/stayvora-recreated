@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { hotelsAPI } from '../utils/api';
 import logoLight from '../assets/logos/logo-light.png';
 import logoDark from '../assets/logos/logo-dark.png';
 import './Landing.css';
@@ -49,35 +50,30 @@ const features = [
   }
 ];
 
-const destinations = [
+const DESTINATION_META = [
   {
     name: 'Sigiriya',
     image: `${UPLOAD_HOST}/uploads/sigiriya.jpg`,
-    hotelCount: '34+ Hotels',
     large: true
   },
   {
     name: 'Galle',
     image: `${UPLOAD_HOST}/uploads/galle.jpg`,
-    hotelCount: '18+ Hotels',
     large: false
   },
   {
     name: 'Ella',
     image: `${UPLOAD_HOST}/uploads/ella.jpeg`,
-    hotelCount: '52+ Hotels',
     large: false
   },
   {
     name: 'Colombo',
     image: `${UPLOAD_HOST}/uploads/colombo.jpg`,
-    hotelCount: '28+ Hotels',
     large: false
   },
   {
     name: 'Mirissa',
     image: `${UPLOAD_HOST}/uploads/mirissa.jpg`,
-    hotelCount: '14+ Hotels',
     large: false
   }
 ];
@@ -152,6 +148,14 @@ export default function Landing() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
+  const [destCounts, setDestCounts] = useState({});
+
+  useEffect(() => {
+    const names = DESTINATION_META.map(d => d.name);
+    hotelsAPI.destinationCounts(names).then(r => {
+      setDestCounts(r.data.counts || {});
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -459,7 +463,7 @@ export default function Landing() {
             </p>
           </Reveal>
           <div className="landing-destinations-grid">
-            {destinations.map((dest, i) => (
+            {DESTINATION_META.map((dest, i) => (
               <Reveal key={i} delay={i * 80} className={`landing-dest-reveal ${dest.large ? 'landing-dest-reveal-large' : ''}`}>
                 <Link
                   to={`/search?location=${dest.name}`}
@@ -470,7 +474,7 @@ export default function Landing() {
                     style={{ backgroundImage: `url(${dest.image})` }}
                   />
                   <div className="landing-destination-overlay" />
-                  <span className="landing-destination-count-pill">{dest.hotelCount}</span>
+                  <span className="landing-destination-count-pill">{destCounts[dest.name] ?? 0} Hotel{(destCounts[dest.name] ?? 0) !== 1 ? 's' : ''}</span>
                   <div className="landing-destination-content">
                     <h3 className="landing-destination-name">{dest.name}</h3>
                     <span className="landing-destination-explore">

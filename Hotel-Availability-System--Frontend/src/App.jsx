@@ -104,6 +104,14 @@ export default function App() {
         }
       />
       <Route
+        path="/hotels"
+        element={
+          <ProtectedRoute requiredRole="traveler">
+            <AuthLayout><SearchResults /></AuthLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/search"
         element={
           <ProtectedRoute requiredRole="traveler">

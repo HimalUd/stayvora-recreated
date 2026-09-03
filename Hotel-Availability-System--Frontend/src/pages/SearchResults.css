@@ -3,6 +3,18 @@
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
   background: #F4F8FF;
+  animation: srPageIn 0.4s ease-out;
+}
+
+@keyframes srPageIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .sr-layout {

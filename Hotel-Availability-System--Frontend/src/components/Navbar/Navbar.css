@@ -66,13 +66,13 @@
   width: 0;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, #FFD166, #F5A624);
+  background: linear-gradient(90deg, #2563EB, #155DFC);
   transition: width 0.25s ease;
 }
 
 .navbar-link:hover,
 .navbar-link.active {
-  color: #F5A624;
+  color: #2563EB;
 }
 
 .navbar-link:hover::after,
@@ -86,7 +86,7 @@
 
 .navbar-link-purple:hover,
 .navbar-link-purple.active {
-  color: #F5A624;
+  color: #2563EB;
 }
 
 .navbar-right {

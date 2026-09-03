@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { bookingsAPI } from '../utils/api';
+import { bookingsAPI, hotelsAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { useHotels } from '../hooks/useHotels';
 import { Link, useNavigate } from 'react-router-dom';
@@ -15,11 +15,11 @@ const UPLOAD_HOST = `http://${window.location.hostname || 'localhost'}:8090`;
 
 const ratings = [1, 2, 3, 4, 5];
 
-const destinations = [
-  { name: 'Mirissa', count: '23 Hotels', image: `${UPLOAD_HOST}/uploads/mirissa.jpg` },
-  { name: 'Colombo', count: '156 Hotels', image: `${UPLOAD_HOST}/uploads/colombo.jpg` },
-  { name: 'Ella', count: '198 Hotels', image: `${UPLOAD_HOST}/uploads/ella.jpeg` },
-  { name: 'Galle', count: '142 Hotels', image: `${UPLOAD_HOST}/uploads/galle.jpg` },
+const DESTINATION_META = [
+  { name: 'Mirissa', image: `${UPLOAD_HOST}/uploads/mirissa.jpg` },
+  { name: 'Colombo', image: `${UPLOAD_HOST}/uploads/colombo.jpg` },
+  { name: 'Ella', image: `${UPLOAD_HOST}/uploads/ella.jpeg` },
+  { name: 'Galle', image: `${UPLOAD_HOST}/uploads/galle.jpg` },
 ];
 
 const testimonials = [
@@ -116,7 +116,7 @@ function DestinationCard({ dest }) {
       <div className="dest-card-overlay" />
       <div className="dest-card-content">
         <h3 className="dest-card-name">{dest.name}</h3>
-        <span className="dest-card-count">{dest.count}</span>
+        <span className="dest-card-count">{dest.count} Hotel{dest.count !== 1 ? 's' : ''}</span>
         <span className="dest-card-explore">
           Explore
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -154,6 +154,14 @@ export default function Home() {
   const navigate = useNavigate();
   const [showGuide, setShowGuide] = useState(() => sessionStorage.getItem('showHomeGuide') === '1');
   const { data: hotels = [] } = useHotels();
+  const [destCounts, setDestCounts] = useState({});
+
+  useEffect(() => {
+    const names = DESTINATION_META.map(d => d.name);
+    hotelsAPI.destinationCounts(names).then(r => {
+      setDestCounts(r.data.counts || {});
+    }).catch(() => {});
+  }, []);
   const { data: bookings = [] } = useQuery({
     queryKey: ['bookings', 'user-home'],
     queryFn: () => bookingsAPI.listUser().then(r => r.data.bookings || []),
@@ -618,9 +626,9 @@ export default function Home() {
             <p className="dest-subtitle">Handpicked locations for your next adventure</p>
           </Reveal>
           <div className="dest-grid">
-            {destinations.map((d, i) => (
+            {DESTINATION_META.map((d, i) => (
               <Reveal key={d.name} delay={i * 80}>
-                <DestinationCard dest={d} />
+                <DestinationCard dest={{ ...d, count: destCounts[d.name] ?? 0 }} />
               </Reveal>
             ))}
           </div>

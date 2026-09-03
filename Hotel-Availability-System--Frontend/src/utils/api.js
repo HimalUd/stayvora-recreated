@@ -31,6 +31,7 @@ export const hotelsAPI = {
   extractAddress: (url) => api.post('/api/hotels/extract-address', { url }),
   addAmenity: (data) => api.post('/api/hotels/add_amenity', data),
   deleteAmenity: (data) => api.post('/api/hotels/delete_amenity', data),
+  destinationCounts: (locations) => api.get('/api/hotels/destination-counts', { params: { locations: locations.join(',') } }),
 };
 
 export const roomsAPI = {

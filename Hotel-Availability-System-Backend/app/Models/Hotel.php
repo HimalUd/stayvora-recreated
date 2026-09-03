@@ -180,6 +180,16 @@ class Hotel extends Model {
         return $this->query("DELETE FROM hotel_images WHERE id = ?", [$imageId])->rowCount() > 0;
     }
 
+    public function getDestinationCounts(array $locations): array {
+        $counts = [];
+        foreach ($locations as $loc) {
+            $sql = "SELECT COUNT(*) as count FROM hotels WHERE status = 'active' AND location LIKE ?";
+            $stmt = $this->query($sql, ["%{$loc}%"]);
+            $counts[$loc] = (int)$stmt->fetch()['count'];
+        }
+        return $counts;
+    }
+
     public function getAdminHotelList(): array {
         $sql = "SELECT h.*, u.name as owner_name, u.email as owner_email, u.phone as owner_phone,
                 (SELECT COUNT(*) FROM bookings WHERE hotel_id = h.id) as total_bookings,

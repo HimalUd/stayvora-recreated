@@ -317,6 +317,18 @@ class HotelController extends Controller {
         $this->json(["message" => "Image deleted successfully"]);
     }
 
+    public function destinationCounts(): void {
+        $locationsParam = $this->getQueryParam('locations', '');
+        $locations = array_filter(array_map('trim', explode(',', $locationsParam)));
+
+        if (empty($locations)) {
+            $this->json(["message" => "locations parameter is required"], 400);
+        }
+
+        $counts = $this->hotelModel->getDestinationCounts(array_values($locations));
+        $this->json(["counts" => $counts]);
+    }
+
     public function search(): void {
         $filters = [
             'location' => $this->getQueryParam('location', ''),

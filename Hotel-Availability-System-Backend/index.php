@@ -39,6 +39,7 @@ $routes = [
     'api/hotels/extract-address' => ['HotelController', 'extractAddress'],
     'api/hotels/extract_address' => ['HotelController', 'extractAddress'],
     'api/hotels/my'              => ['HotelController', 'my'],
+    'api/hotels/destination-counts' => ['HotelController', 'destinationCounts'],
     'api/hotels/search'          => ['HotelController', 'search'],
     'api/hotels/add_amenity'     => ['HotelController', 'addAmenity'],
     'api/hotels/delete_amenity'  => ['HotelController', 'deleteAmenity'],
