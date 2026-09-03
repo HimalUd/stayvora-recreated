@@ -295,9 +295,21 @@ export default function Home() {
     tags: h.amenities ? h.amenities.split(',').map(t => t.trim()).filter(Boolean).slice(0, 3) : [],
   }));
 
+  const [sortBy, setSortBy] = useState('recommended');
+
+  const sortedHotels = [...displayHotels].sort((a, b) => {
+    switch (sortBy) {
+      case 'price_asc': return a.price - b.price;
+      case 'price_desc': return b.price - a.price;
+      case 'rating_desc': return b.rating - a.rating;
+      case 'name': return a.name.localeCompare(b.name);
+      default: return 0;
+    }
+  });
+
   const HOTELS_LIMIT = 20;
-  const shownHotels = displayHotels.slice(0, HOTELS_LIMIT);
-  const hasMoreHotels = displayHotels.length > HOTELS_LIMIT;
+  const shownHotels = sortedHotels.slice(0, HOTELS_LIMIT);
+  const hasMoreHotels = sortedHotels.length > HOTELS_LIMIT;
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -589,9 +601,15 @@ export default function Home() {
                 <h2 className="hotels-title">Curated Luxury Hotels</h2>
                 <p className="hotels-subtitle">{displayHotels.length} premium {displayHotels.length === 1 ? 'property' : 'properties'} match your preferences</p>
               </div>
-              <div className="sort-dropdown">
-                <span>Sort by: Recommended</span>
-                <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+              <div className="sort-wrap">
+                <select className="sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                  <option value="recommended">Sort by: Recommended</option>
+                  <option value="price_asc">Price: Low to High</option>
+                  <option value="price_desc">Price: High to Low</option>
+                  <option value="rating_desc">Rating: High to Low</option>
+                  <option value="name">Name: A to Z</option>
+                </select>
+                <svg className="sort-chevron" width="12" height="8" viewBox="0 0 12 8" fill="none">
                   <path d="M1 1.5L6 6.5L11 1.5" stroke="#1A2B49" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
               </div>

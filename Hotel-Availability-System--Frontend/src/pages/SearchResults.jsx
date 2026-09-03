@@ -73,7 +73,7 @@ export default function SearchResults() {
     tags: h.amenities ? h.amenities.split(',').map(t => t.trim()).filter(Boolean).slice(0, 3) : [],
   }));
 
-  const [sortBy, setSortBy] = useState('location');
+  const [sortBy, setSortBy] = useState('recommended');
   const [searchText, setSearchText] = useState('');
   const [searchApplied, setSearchApplied] = useState('');
   const [viewMode, setViewMode] = useState('grid');
@@ -88,17 +88,11 @@ export default function SearchResults() {
     })
     .sort((a, b) => {
       switch (sortBy) {
-        case 'city':
-          return (a.city || '').localeCompare(b.city || '');
-        case 'rating_desc':
-          return (b.rating || 0) - (a.rating || 0);
-        case 'price_desc':
-          return (b.price || 0) - (a.price || 0);
-        case 'price_asc':
-          return (a.price || 0) - (b.price || 0);
-        case 'location':
-        default:
-          return (a.location || '').localeCompare(b.location || '');
+        case 'price_asc': return a.price - b.price;
+        case 'price_desc': return b.price - a.price;
+        case 'rating_desc': return b.rating - a.rating;
+        case 'name': return a.name.localeCompare(b.name);
+        default: return 0;
       }
     });
 
@@ -212,13 +206,13 @@ export default function SearchResults() {
                   </svg>
                 </button>
               </div>
-              <div className="sr-sort-btn sr-sort-wrap">
+              <div className="sr-sort-wrap">
                 <select className="sr-sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                  <option value="location">Sort by: Location</option>
-                  <option value="city">Sort by: City</option>
-                  <option value="rating_desc">Rating: High to Low</option>
-                  <option value="price_desc">Price: High to Low</option>
+                  <option value="recommended">Sort by: Recommended</option>
                   <option value="price_asc">Price: Low to High</option>
+                  <option value="price_desc">Price: High to Low</option>
+                  <option value="rating_desc">Rating: High to Low</option>
+                  <option value="name">Name: A to Z</option>
                 </select>
                 <svg className="sr-sort-chevron" width="12" height="8" viewBox="0 0 12 8" fill="none">
                   <path d="M1 1.5L6 6.5L11 1.5" stroke="#1A2B49" strokeWidth="1.5" strokeLinecap="round" />
