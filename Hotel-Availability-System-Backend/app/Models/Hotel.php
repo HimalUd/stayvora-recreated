@@ -97,13 +97,29 @@ class Hotel extends Model {
         }
 
         if (!empty($filters['event'])) {
-            $sql .= " AND e.name LIKE ?";
-            $params[] = "%{$filters['event']}%";
+            $events = array_filter(array_map('trim', explode(',', $filters['event'])));
+            if (count($events) > 0) {
+                $sql .= " AND (";
+                $conds = [];
+                foreach ($events as $ev) {
+                    $conds[] = "e.name LIKE ?";
+                    $params[] = "%{$ev}%";
+                }
+                $sql .= implode(' OR ', $conds) . ")";
+            }
         }
 
         if (!empty($filters['amenity'])) {
-            $sql .= " AND h.amenities LIKE ?";
-            $params[] = "%{$filters['amenity']}%";
+            $amenities = array_filter(array_map('trim', explode(',', $filters['amenity'])));
+            if (count($amenities) > 0) {
+                $sql .= " AND (";
+                $conds = [];
+                foreach ($amenities as $am) {
+                    $conds[] = "h.amenities LIKE ?";
+                    $params[] = "%{$am}%";
+                }
+                $sql .= implode(' OR ', $conds) . ")";
+            }
         }
 
         if (!empty($filters['check_in']) && !empty($filters['check_out'])) {

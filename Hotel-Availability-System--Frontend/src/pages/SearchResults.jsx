@@ -122,6 +122,19 @@ export default function SearchResults() {
   const removeParam = (key) => updateParams((p) => p.delete(key));
   const clearAll = () => navigate('/search');
 
+  const removeFilterChip = (c) => {
+    if (c.param) {
+      updateParams((p) => {
+        const vals = (p.get(c.param) || '').split(',').map(s => s.trim()).filter(Boolean);
+        const next = vals.filter(v => v !== c.label);
+        if (next.length > 0) p.set(c.param, next.join(','));
+        else p.delete(c.param);
+      });
+    } else {
+      removeParam(c.key);
+    }
+  };
+
   const criteriaChips = [];
   if (initialFilters.location) criteriaChips.push({ key: 'location', label: initialFilters.location });
   if (initialFilters.check_in && initialFilters.check_out) {
@@ -139,8 +152,8 @@ export default function SearchResults() {
   if (initialFilters.max_price) filterChips.push({ key: 'max_price', label: `Max ${formatLKRFixed(initialFilters.max_price)}` });
   if (initialFilters.rating) filterChips.push({ key: 'rating', label: `${initialFilters.rating}★ & up` });
   if (initialFilters.travel_purpose) filterChips.push({ key: 'travel_purpose', label: initialFilters.travel_purpose });
-  if (initialFilters.event) filterChips.push({ key: 'event', label: initialFilters.event });
-  if (initialFilters.amenity) filterChips.push({ key: 'amenity', label: initialFilters.amenity });
+  (initialFilters.event ? initialFilters.event.split(',').map(s => s.trim()).filter(Boolean) : []).forEach(v => filterChips.push({ key: `event:${v}`, param: 'event', label: v }));
+  (initialFilters.amenity ? initialFilters.amenity.split(',').map(s => s.trim()).filter(Boolean) : []).forEach(v => filterChips.push({ key: `amenity:${v}`, param: 'amenity', label: v }));
 
   const title = initialFilters.location ? `Hotels in ${initialFilters.location}` : 'Curated Luxury Hotels';
   const dateLabel = initialFilters.check_in && initialFilters.check_out
@@ -257,7 +270,7 @@ export default function SearchResults() {
                   </button>
                 ))}
                 {filterChips.map((c) => (
-                  <button key={c.key} className="sr-criteria-chip sr-criteria-chip-filter" onClick={() => removeParam(c.key)} title="Remove">
+                  <button key={c.key} className="sr-criteria-chip sr-criteria-chip-filter" onClick={() => removeFilterChip(c)} title="Remove">
                     <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                       <path d="M8 1.33c-3.68 0-6.67 2.99-6.67 6.67s2.99 6.67 6.67 6.67 6.67-2.99 6.67-6.67S11.68 1.33 8 1.33z" fill="currentColor" />
                       <path d="M6 6l4 4M10 6l-4 4" stroke="#fff" strokeWidth="1.3" strokeLinecap="round" />

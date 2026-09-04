@@ -19,12 +19,18 @@ const INITIAL_FILTERS = {
   amenity: '',
 };
 
+const parseMulti = (val) => (val ? val.split(',').map(s => s.trim()).filter(Boolean) : []);
+
 export default function FilterPanel({ onFilter, initialFilters }) {
   const [filters, setFilters] = useState({ ...INITIAL_FILTERS, ...(initialFilters || {}) });
+  const [eventSel, setEventSel] = useState(() => parseMulti(initialFilters?.event));
+  const [amenitySel, setAmenitySel] = useState(() => parseMulti(initialFilters?.amenity));
 
   // Sync local state when URL filters change (back/forward navigation, new search)
   useEffect(() => {
     setFilters({ ...INITIAL_FILTERS, ...(initialFilters || {}) });
+    setEventSel(parseMulti(initialFilters?.event));
+    setAmenitySel(parseMulti(initialFilters?.amenity));
     setCalOpen(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(initialFilters)]);
@@ -50,16 +56,23 @@ export default function FilterPanel({ onFilter, initialFilters }) {
   };
 
   const handleApply = () => {
-    onFilter(filters);
+    onFilter({ ...filters, event: eventSel.join(','), amenity: amenitySel.join(',') });
   };
 
   const handleClear = () => {
     setFilters(INITIAL_FILTERS);
+    setEventSel([]);
+    setAmenitySel([]);
     setCalOpen(null);
     onFilter(INITIAL_FILTERS);
   };
 
-  const activeCount = Object.values(filters).filter(Boolean).length;
+  const toggleEvent = (t) => setEventSel(prev => prev.includes(t) ? prev.filter(x => x !== t) : [...prev, t]);
+  const toggleAmenity = (a) => setAmenitySel(prev => prev.includes(a) ? prev.filter(x => x !== a) : [...prev, a]);
+
+  const activeCount = [filters, { event: eventSel.join(','), amenity: amenitySel.join(',') }]
+    .map(f => Object.values(f).filter(Boolean).filter(v => v.length > 0).length)
+    .reduce((a, b) => a + b, 0);
 
   return (
     <div className="filter-panel">
@@ -239,22 +252,34 @@ export default function FilterPanel({ onFilter, initialFilters }) {
 
         <div className="filter-group filter-group-full">
           <label htmlFor="event">Event</label>
-          <select id="event" name="event" value={filters.event} onChange={handleChange}>
-            <option value="">Any event</option>
+          <div className="fp-ms-labels" id="event">
             {EVENT_TYPES.map(t => (
-              <option key={t} value={t}>{t}</option>
+              <button
+                key={t}
+                type="button"
+                className={`fp-ms-chip ${eventSel.includes(t) ? 'fp-ms-chip-active' : ''}`}
+                onClick={() => toggleEvent(t)}
+              >
+                {t}
+              </button>
             ))}
-          </select>
+          </div>
         </div>
 
         <div className="filter-group filter-group-full">
           <label htmlFor="amenity">Amenity</label>
-          <select id="amenity" name="amenity" value={filters.amenity} onChange={handleChange}>
-            <option value="">Any amenity</option>
+          <div className="fp-ms-labels" id="amenity">
             {AMENITIES.map(a => (
-              <option key={a} value={a}>{a}</option>
+              <button
+                key={a}
+                type="button"
+                className={`fp-ms-chip ${amenitySel.includes(a) ? 'fp-ms-chip-active' : ''}`}
+                onClick={() => toggleAmenity(a)}
+              >
+                {a}
+              </button>
             ))}
-          </select>
+          </div>
         </div>
       </div>
 

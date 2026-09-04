@@ -184,14 +184,14 @@ export default function Home() {
   const [ovRooms, setOvRooms] = useState(1);
   const [ovRating, setOvRating] = useState(null);
   const [ovPurpose, setOvPurpose] = useState(null);
-  const [ovEvent, setOvEvent] = useState(null);
-  const [ovAmenity, setOvAmenity] = useState(null);
+  const [ovEvents, setOvEvents] = useState([]);
+  const [ovAmenities, setOvAmenities] = useState([]);
   const [ovMinPrice, setOvMinPrice] = useState('');
   const [ovMaxPrice, setOvMaxPrice] = useState('');
 
   const activeFilterCount = [
-    ovLocation, ovCheckIn, ovCheckOut, ovMinPrice, ovMaxPrice, ovRating, ovPurpose, ovEvent, ovAmenity,
-  ].filter(Boolean).length;
+    ovLocation, ovCheckIn, ovCheckOut, ovMinPrice, ovMaxPrice, ovRating, ovPurpose,
+  ].filter(Boolean).length + ovEvents.length + ovAmenities.length;
 
   const minPriceVal = ovMinPrice ? Math.min(Number(ovMinPrice), PRICE_MAX) : PRICE_MIN;
   const maxPriceVal = ovMaxPrice ? Math.max(Number(ovMaxPrice), PRICE_MIN) : PRICE_MAX;
@@ -206,8 +206,8 @@ export default function Home() {
     setOvMaxPrice('');
     setOvRating(null);
     setOvPurpose(null);
-    setOvEvent(null);
-    setOvAmenity(null);
+    setOvEvents([]);
+    setOvAmenities([]);
     setCalOpen(null);
   };
 
@@ -351,8 +351,8 @@ export default function Home() {
     if (ovMaxPrice) params.set('max_price', ovMaxPrice);
     if (ovRating) params.set('rating', ovRating);
     if (ovPurpose) params.set('travel_purpose', ovPurpose);
-    if (ovEvent) params.set('event', ovEvent);
-    if (ovAmenity) params.set('amenity', ovAmenity);
+    if (ovEvents.length > 0) params.set('event', ovEvents.join(','));
+    if (ovAmenities.length > 0) params.set('amenity', ovAmenities.join(','));
     navigate(`/search?${params.toString()}`);
   };
 
@@ -896,44 +896,34 @@ export default function Home() {
             </div>
 
             {/* Event */}
-            <div className="ov-field-group">
-              <label className="ov-label">Event</label>
-              <div className="ov-field">
-                <span className="ov-select-wrap">
-                  <select
-                    value={ovEvent || ''}
-                    onChange={(e) => setOvEvent(e.target.value || null)}
+            <div className="ov-section">
+              <div className="ov-section-header"><span>Events</span></div>
+              <div className="ov-chips ov-chips-pill">
+                {EVENT_TYPES.map(t => (
+                  <button
+                    key={t}
+                    className={`ov-pill ${ovEvents.includes(t) ? 'ov-pill-active' : ''}`}
+                    onClick={() => setOvEvents(prev => prev.includes(t) ? prev.filter(x => x !== t) : [...prev, t])}
                   >
-                    <option value="">Any event</option>
-                    {EVENT_TYPES.map(t => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                  <svg className="ov-select-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
-                    <path d="M1 1l4 4 4-4" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
+                    {t}
+                  </button>
+                ))}
               </div>
             </div>
 
             {/* Amenity */}
-            <div className="ov-field-group">
-              <label className="ov-label">Amenity</label>
-              <div className="ov-field">
-                <span className="ov-select-wrap">
-                  <select
-                    value={ovAmenity || ''}
-                    onChange={(e) => setOvAmenity(e.target.value || null)}
+            <div className="ov-section">
+              <div className="ov-section-header"><span>Amenities</span></div>
+              <div className="ov-chips ov-chips-pill">
+                {AMENITIES.map(a => (
+                  <button
+                    key={a}
+                    className={`ov-pill ${ovAmenities.includes(a) ? 'ov-pill-active' : ''}`}
+                    onClick={() => setOvAmenities(prev => prev.includes(a) ? prev.filter(x => x !== a) : [...prev, a])}
                   >
-                    <option value="">Any amenity</option>
-                    {AMENITIES.map(a => (
-                      <option key={a} value={a}>{a}</option>
-                    ))}
-                  </select>
-                  <svg className="ov-select-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
-                    <path d="M1 1l4 4 4-4" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
+                    {a}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
